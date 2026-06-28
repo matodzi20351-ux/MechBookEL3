@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MechBook EL – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#2563EB;--accent:#0EA5E9;--secondary:#EFF6FF;
+  --bg:#F4F7FB;--card:#FFFFFF;--text:#0F172A;--muted:#475569;
+  --border:#D6E0EA;--success:#16A34A;--warning:#F59E0B;--danger:#DC2626;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:var(--primary);border-radius:6px;}
+
+/* SIDEBAR */
+.sidebar{width:260px;min-height:100vh;background:#fff;border-right:2px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:.3s;}
+.sidebar-logo{padding:1.4rem 1.4rem .9rem;border-bottom:1px solid var(--border);}
+.logo-text{font-family:'Bebas Neue';font-size:1.7rem;letter-spacing:3px;}
+.logo-text span{color:var(--primary);}
+.user-chip{display:flex;align-items:center;gap:.6rem;margin-top:.8rem;padding:.6rem .8rem;background:var(--secondary);border-radius:10px;border:1px solid var(--border);}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:900;flex-shrink:0;}
+.user-name{font-size:.88rem;font-weight:800;line-height:1.2;}
+.user-role{font-size:.72rem;color:var(--muted);}
+.sidebar-nav{flex:1;padding:.8rem 0;overflow-y:auto;}
+.nav-label{font-size:.65rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:.5rem 1.4rem;margin-top:.4rem;}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.72rem 1.4rem;color:var(--muted);text-decoration:none;font-weight:700;font-size:.88rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;position:relative;transition:.2s;}
+.nav-item:hover,.nav-item.active{color:var(--primary);background:var(--secondary);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:0 2px 2px 0;}
+.nav-icon{font-size:1.05rem;width:22px;text-align:center;}
+.badge{margin-left:auto;background:var(--primary);color:#fff;font-size:.65rem;font-weight:900;padding:.1rem .4rem;border-radius:10px;min-width:18px;text-align:center;}
+.badge.orange{background:var(--warning);}
+.badge.red{background:var(--danger);}
+.sidebar-footer{padding:.9rem 1.4rem;border-top:1px solid var(--border);}
+.logout-btn{display:flex;align-items:center;gap:.75rem;width:100%;padding:.65rem 1rem;background:transparent;border:2px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Nunito';font-weight:700;font-size:.85rem;cursor:pointer;transition:.2s;}
+.logout-btn:hover{border-color:var(--danger);color:var(--danger);}
+
+/* MAIN */
+.main{margin-left:260px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{background:#fff;border-bottom:2px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:'Bebas Neue';font-size:1.5rem;letter-spacing:2px;}
+.topbar-title span{color:var(--primary);}
+.topbar-sub{color:var(--muted);font-size:.78rem;margin-top:.1rem;}
+.topbar-right{display:flex;align-items:center;gap:.75rem;}
+.topbar-btn{background:var(--secondary);border:2px solid var(--border);color:var(--muted);padding:.5rem 1rem;border-radius:10px;font-family:'Nunito';font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;}
+.topbar-btn:hover{border-color:var(--primary);color:var(--primary);}
+.notif-dot{width:7px;height:7px;background:var(--danger);border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* PANELS */
+.panel{display:none;padding:2rem;animation:fadeIn .3s ease both;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* LOADING */
+.loading-box{text-align:center;padding:3rem;color:var(--muted);}
+.loading-box .spin{font-size:2rem;animation:spinA 1s linear infinite;display:block;margin-bottom:.8rem;}
+@keyframes spinA{to{transform:rotate(360deg);}}
+
+/* EMPTY STATE */
+.empty-state{background:var(--card);border:2px dashed var(--border);border-radius:20px;padding:3.5rem 2rem;text-align:center;}
+.empty-icon{font-size:3.5rem;margin-bottom:1rem;}
+.empty-title{font-family:'Bebas Neue';font-size:1.8rem;letter-spacing:2px;color:var(--muted);margin-bottom:.5rem;}
+.empty-msg{color:var(--muted);font-size:.9rem;max-width:380px;margin:0 auto 1.5rem;line-height:1.6;}
+.empty-btn{display:inline-block;padding:.75rem 2rem;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;border-radius:12px;font-weight:900;font-family:'Nunito';font-size:.95rem;cursor:pointer;text-decoration:none;transition:.25s;}
+.empty-btn:hover{transform:translateY(-2px);}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.3rem;transition:.25s;cursor:default;}
+.stat-card:hover{border-color:var(--primary);transform:translateY(-3px);}
+.stat-icon{font-size:1.7rem;margin-bottom:.6rem;}
+.stat-val{font-family:'Bebas Neue';font-size:2.1rem;letter-spacing:1px;line-height:1;color:var(--primary);}
+.stat-label{color:var(--muted);font-size:.76rem;font-weight:800;margin-top:.2rem;text-transform:uppercase;letter-spacing:.5px;}
+
+/* SEC HEADER */
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.sec-header h2{font-size:1rem;font-weight:900;}
+.sec-header button,.sec-header a{background:transparent;border:none;color:var(--primary);font-family:'Nunito';font-weight:800;font-size:.82rem;cursor:pointer;text-decoration:none;}
+
+/* QUICK ACTIONS */
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.8rem;margin-bottom:2rem;}
+.qa-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:1.2rem 1rem;text-align:center;cursor:pointer;transition:.25s;text-decoration:none;display:block;color:var(--text);}
+.qa-btn:hover{border-color:var(--primary);transform:translateY(-3px);}
+.qa-icon{font-size:1.8rem;margin-bottom:.5rem;}
+.qa-label{font-size:.78rem;font-weight:800;}
+
+/* PROFILE */
+.profile-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:2rem;margin-bottom:1.5rem;}
+.profile-avatar-large{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:900;color:#fff;margin:0 auto 1rem;}
+.profile-name-big{font-size:1.3rem;font-weight:900;text-align:center;}
+.profile-role-tag{display:block;text-align:center;background:var(--secondary);border:1px solid var(--border);color:var(--primary);font-size:.78rem;font-weight:800;padding:.25rem .8rem;border-radius:20px;margin:.4rem auto 0;width:fit-content;}
+.profile-details{margin-top:1.4rem;}
+.profile-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+.profile-row:last-child{border-bottom:none;}
+.profile-row-label{color:var(--muted);font-weight:700;}
+.profile-row-val{font-weight:800;}
+
+/* NOTIFICATIONS */
+.notif-list{display:flex;flex-direction:column;gap:.7rem;}
+.notif-item{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem;transition:.2s;}
+.notif-item.unread{border-left:4px solid var(--primary);}
+.notif-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem;}
+.notif-body{flex:1;}
+.notif-title{font-weight:800;font-size:.88rem;}
+.notif-msg{color:var(--muted);font-size:.78rem;margin-top:.2rem;line-height:1.4;}
+.notif-time{font-size:.7rem;color:var(--muted);margin-top:.3rem;font-weight:700;}
+.unread-dot{width:8px;height:8px;background:var(--primary);border-radius:50%;flex-shrink:0;margin-top:.3rem;}
+
+/* BOOKING CARDS */
+.bookings-list{display:flex;flex-direction:column;gap:.9rem;margin-bottom:1.5rem;}
+.booking-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1.1rem;transition:.25s;}
+.booking-card:hover{border-color:rgba(37,99,235,.3);}
+.booking-ws-icon{width:48px;height:48px;border-radius:10px;background:var(--secondary);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;border:2px solid var(--border);}
+.booking-info{flex:1;min-width:0;}
+.booking-title{font-weight:900;font-size:.95rem;margin-bottom:.15rem;}
+.booking-sub{color:var(--muted);font-size:.8rem;}
+.booking-meta{display:flex;gap:.9rem;margin-top:.35rem;flex-wrap:wrap;}
+.booking-meta span{font-size:.75rem;color:var(--muted);font-weight:700;}
+.booking-right{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;flex-shrink:0;}
+.status-badge{font-size:.72rem;font-weight:900;padding:.22rem .7rem;border-radius:20px;white-space:nowrap;}
+.status-pending{background:rgba(245,158,11,.12);color:var(--warning);border:1px solid var(--warning);}
+.status-progress{background:rgba(22,163,74,.12);color:var(--success);border:1px solid var(--success);}
+.status-done{background:#F1F5F9;color:var(--muted);border:1px solid var(--border);}
+.status-confirmed{background:rgba(37,99,235,.1);color:var(--primary);border:1px solid var(--primary);}
+.status-declined{background:rgba(220,38,38,.1);color:var(--danger);border:1px solid var(--danger);}
+
+/* REQUEST CARDS */
+.request-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;transition:.25s;}
+.request-card:hover{border-color:rgba(37,99,235,.3);}
+.req-avatar{width:44px;height:44px;border-radius:50%;background:var(--secondary);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900;color:var(--primary);flex-shrink:0;}
+.req-info{flex:1;}
+.req-name{font-weight:800;font-size:.9rem;}
+.req-detail{color:var(--muted);font-size:.78rem;margin-top:.12rem;}
+.req-time{font-size:.74rem;color:var(--primary);font-weight:700;margin-top:.25rem;}
+.req-ref{font-size:.68rem;color:var(--muted);font-weight:700;margin-top:.15rem;}
+.req-actions{display:flex;gap:.5rem;flex-shrink:0;flex-wrap:wrap;}
+.action-btn{padding:.3rem .7rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.78rem;cursor:pointer;transition:.2s;border:1px solid;}
+.btn-accept {background:rgba(22,163,74,.1);border-color:var(--success);color:var(--success);}
+.btn-accept:hover{background:var(--success);color:#fff;}
+.btn-decline{background:#FEF2F2;border-color:var(--danger);color:var(--danger);}
+.btn-decline:hover{background:var(--danger);color:#fff;}
+.btn-progress{background:rgba(245,158,11,.1);border-color:var(--warning);color:var(--warning);}
+.btn-progress:hover{background:var(--warning);color:#fff;}
+.btn-done{background:rgba(37,99,235,.1);border-color:var(--primary);color:var(--primary);}
+.btn-done:hover{background:var(--primary);color:#fff;}
+
+/* CHART */
+.chart-section{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2rem;}
+.chart-title{font-weight:900;font-size:.95rem;margin-bottom:1.2rem;}
+.bar-chart{display:flex;align-items:flex-end;gap:.6rem;height:100px;padding-bottom:.5rem;border-bottom:2px solid var(--border);}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;}
+.bar{width:100%;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:4px 4px 0 0;min-height:4px;position:relative;transition:.8s cubic-bezier(.34,1.56,.64,1);}
+.bar-tooltip{position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:.1rem .4rem;border-radius:4px;font-size:.65rem;font-weight:800;white-space:nowrap;opacity:0;transition:.2s;pointer-events:none;}
+.bar:hover .bar-tooltip{opacity:1;}
+
+/* TRACKER */
+.tracker{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2rem;}
+.tracker-steps{display:flex;align-items:center;}
+.tracker-step{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:1;}
+.tracker-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;border:2px solid var(--border);background:var(--bg);transition:.3s;}
+.tracker-dot.done{background:var(--success);border-color:var(--success);color:#fff;}
+.tracker-dot.active{background:var(--primary);border-color:var(--primary);color:#fff;animation:glow 1.5s infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.4);}50%{box-shadow:0 0 0 8px rgba(37,99,235,0);}}
+.tracker-label{font-size:.68rem;color:var(--muted);font-weight:700;text-align:center;line-height:1.3;}
+.tracker-label.done{color:var(--success);}
+.tracker-label.active{color:var(--primary);font-weight:900;}
+.tracker-line{flex:1;height:2px;background:var(--border);margin-bottom:1.4rem;}
+.tracker-line.done{background:var(--success);}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--text);color:#fff;padding:.9rem 1.4rem;border-radius:12px;font-size:.88rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:.4s cubic-bezier(.34,1.56,.64,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--success);}
+.toast.error{background:var(--danger);}
+
+/* MODALS */
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:2rem;max-width:420px;width:100%;animation:fadeIn .3s ease both;}
+.modal h3{font-family:'Bebas Neue';font-size:1.8rem;letter-spacing:2px;margin-bottom:.5rem;}
+.modal h3 span{color:var(--primary);}
+.modal p{color:var(--muted);font-size:.88rem;margin-bottom:1.2rem;line-height:1.5;}
+.modal-textarea{width:100%;padding:.75rem 1rem;border:2px solid var(--border);border-radius:8px;font-family:'Nunito';font-size:.9rem;color:var(--text);outline:none;transition:.2s;resize:vertical;min-height:80px;margin-bottom:1rem;}
+.modal-textarea:focus{border-color:var(--primary);}
+.modal-btns{display:flex;gap:.75rem;flex-wrap:wrap;}
+.modal-btns button{flex:1;padding:.7rem;border-radius:10px;font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;border:none;}
+.btn-confirm{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;}
+.btn-cancel{background:var(--secondary);color:var(--muted);border:2px solid var(--border)!important;}
+.btn-danger{background:var(--danger);color:#fff;}
+
+/* OVERLAY / HAMBURGER */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none;}
+.overlay.show{display:block;}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;padding:.3rem;}
+
+/* SERVER ERROR BOX */
+.api-error{background:rgba(220,38,38,.07);border:2px solid var(--danger);border-radius:12px;padding:1.2rem;color:var(--danger);font-size:.88rem;font-weight:700;margin-bottom:1rem;}
+.api-error code{font-size:.8rem;font-weight:400;display:block;margin-top:.4rem;color:var(--muted);}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .topbar{padding:.75rem 1rem;}
+  .panel{padding:1rem;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .hamburger{display:block!important;}
+  .booking-card,.request-card{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="toast" id="toast"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Mech<span>Book</span> EL</div>
+    <div class="user-chip">
+      <div class="user-avatar" id="avatarInitial">?</div>
+      <div>
+        <div class="user-name" id="sidebarName">Loading…</div>
+        <div class="user-role" id="sidebarRole">–</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OWNER NAV -->
+  <nav class="sidebar-nav" id="owner-nav" style="display:none;">
+    <div class="nav-label">Main</div>
+    <button class="nav-item" onclick="showPanel('overview',this)"><span class="nav-icon">🏠</span>Overview</button>
+    <button class="nav-item" onclick="showPanel('bookings',this)"><span class="nav-icon">📅</span>My Bookings</button>
+    <button class="nav-item" onclick="showPanel('tracker',this)"><span class="nav-icon">🔍</span>Track My Car</button>
+    <div class="nav-label">Account</div>
+    <button class="nav-item" onclick="showPanel('notifications',this);loadNotifications();">
+      <span class="nav-icon">🔔</span>Notifications
+      <span class="badge orange" id="owner-notif-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-item" onclick="showPanel('profile',this)"><span class="nav-icon">👤</span>My Profile</button>
+    <a href="home.html" class="nav-item"><span class="nav-icon">←</span>Back to Home</a>
+  </nav>
+
+  <!-- MECHANIC NAV -->
+  <nav class="sidebar-nav" id="mechanic-nav" style="display:none;">
+    <div class="nav-label">Workshop</div>
+    <button class="nav-item" onclick="showPanel('mec-overview',this)"><span class="nav-icon">🏠</span>Overview</button>
+    <button class="nav-item" onclick="showPanel('mec-requests',this);loadWorkshopBookings();">
+      <span class="nav-icon">📋</span>Booking Requests
+      <span class="badge red" id="mec-req-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-item" onclick="showPanel('mec-active',this);loadWorkshopBookings();">
+      <span class="nav-icon">🔧</span>Active Jobs
+    </button>
+    <div class="nav-label">Manage</div>
+    <button class="nav-item" onclick="showPanel('notifications',this);loadNotifications();">
+      <span class="nav-icon">🔔</span>Notifications
+      <span class="badge orange" id="mec-notif-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-item" onclick="showPanel('mec-profile',this)"><span class="nav-icon">🏪</span>Workshop Profile</button>
+    <a href="home.html" class="nav-item"><span class="nav-icon">←</span>Back to Home</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="openLogoutModal()">🚪 Log Out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <button class="hamburger" id="hamburger" onclick="openSidebar()">☰</button>
+      <div>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-sub" id="topbarSub">East London, EC</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="showPanel('notifications',null);loadNotifications();">
+        🔔 <span class="notif-dot" id="topbar-notif-dot" style="display:none;"></span>
+      </button>
+      <button class="topbar-btn" onclick="refreshAll()">↻ Refresh</button>
+      <a href="home.html" class="topbar-btn">← Home</a>
+    </div>
+  </div>
+
+  <!-- ══════ OWNER PANELS ══════ -->
+  <div class="panel" id="panel-overview">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-total">–</div><div class="stat-label">Total Bookings</div></div>
+      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-val" id="stat-pending">–</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="stat-confirmed">–</div><div class="stat-label">Confirmed</div></div>
+      <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-val" id="stat-done">–</div><div class="stat-label">Completed</div></div>
+    </div>
+    <div class="sec-header"><h2>Quick Actions</h2></div>
+    <div class="quick-actions">
+      <a href="booking.html" class="qa-btn"><div class="qa-icon">📅</div><div class="qa-label">Book Workshop</div></a>
+      <a href="search.html"  class="qa-btn"><div class="qa-icon">🔍</div><div class="qa-label">Find Mechanic</div></a>
+      <button class="qa-btn" onclick="showPanel('tracker',null)"><div class="qa-icon">🚗</div><div class="qa-label">Track My Car</div></button>
+      <button class="qa-btn" onclick="showPanel('bookings',null)"><div class="qa-icon">📋</div><div class="qa-label">My Bookings</div></button>
+      <button class="qa-btn" onclick="showPanel('profile',null)"><div class="qa-icon">👤</div><div class="qa-label">My Profile</div></button>
+    </div>
+    <div class="sec-header"><h2>Recent Activity</h2><button onclick="showPanel('bookings',null)">View All →</button></div>
+    <div id="overview-bookings-list"></div>
+  </div>
+
+  <div class="panel" id="panel-bookings">
+    <div class="sec-header"><h2>📅 My Bookings</h2><button onclick="loadOwnerBookings()">↻ Refresh</button></div>
+    <div id="bookings-list"></div>
+  </div>
+
+  <div class="panel" id="panel-tracker">
+    <div class="sec-header"><h2>🔍 Track My Car</h2></div>
+    <div id="tracker-content"></div>
+  </div>
+
+  <div class="panel" id="panel-notifications">
+    <div class="sec-header"><h2>🔔 Notifications</h2><button onclick="markAllRead()">Mark all read</button></div>
+    <div class="notif-list" id="notif-list"></div>
+  </div>
+
+  <div class="panel" id="panel-profile">
+    <div class="sec-header"><h2>👤 My Profile</h2></div>
+    <div id="profile-content"></div>
+  </div>
+
+  <!-- ══════ MECHANIC PANELS ══════ -->
+  <div class="panel" id="panel-mec-overview">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val" id="mec-stat-pending">–</div><div class="stat-label">New Requests</div></div>
+      <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-val" id="mec-stat-active">–</div><div class="stat-label">Active Jobs</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="mec-stat-done">–</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="mec-stat-total">–</div><div class="stat-label">Total Requests</div></div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-title">📊 Weekly Bookings (last 7 days)</div>
+      <div class="bar-chart" id="barChart"></div>
+      <div style="display:flex;justify-content:space-around;margin-top:.5rem;">
+        <span style="font-size:.66rem;color:var(--muted);">Mon</span><span style="font-size:.66rem;color:var(--muted);">Tue</span><span style="font-size:.66rem;color:var(--muted);">Wed</span><span style="font-size:.66rem;color:var(--muted);">Thu</span><span style="font-size:.66rem;color:var(--muted);">Fri</span><span style="font-size:.66rem;color:var(--muted);">Sat</span><span style="font-size:.66rem;color:var(--muted);">Sun</span>
+      </div>
+    </div>
+    <div class="sec-header"><h2>Latest Requests</h2><button onclick="showPanel('mec-requests',null)">View All →</button></div>
+    <div id="mec-overview-requests"></div>
+  </div>
+
+  <div class="panel" id="panel-mec-requests">
+    <div class="sec-header"><h2>📋 Booking Requests</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
+    <div id="mec-requests-list"></div>
+  </div>
+
+  <div class="panel" id="panel-mec-active">
+    <div class="sec-header"><h2>🔧 Active Jobs</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
+    <div id="mec-active-list"></div>
+  </div>
+
+  <div class="panel" id="panel-mec-profile">
+    <div class="sec-header"><h2>🏪 Workshop Profile</h2></div>
+    <div id="mec-profile-content"></div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-bg" id="logoutModal">
+  <div class="modal">
+    <h3>Log <span>Out?</span></h3>
+    <p>Are you sure you want to log out of MechBook EL?</p>
+    <div class="modal-btns">
+      <button class="btn-confirm" onclick="doLogout()">Yes, Log Out</button>
+      <button class="btn-cancel"  onclick="closeModal('logoutModal')">Stay Logged In</button>
+    </div>
+  </div>
+</div>
+
+<!-- DECLINE MODAL -->
+<div class="modal-bg" id="declineModal">
+  <div class="modal">
+    <h3>Decline <span>Booking?</span></h3>
+    <p>Optionally leave a note for the customer explaining why the booking was declined.</p>
+    <textarea class="modal-textarea" id="declineFeedback" placeholder="e.g. Fully booked on that date. Please try another slot."></textarea>
+    <div class="modal-btns">
+      <button class="btn-danger" id="declineConfirmBtn">❌ Decline &amp; Notify</button>
+      <button class="btn-cancel" onclick="closeModal('declineModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETE MODAL -->
+<div class="modal-bg" id="completeModal">
+  <div class="modal">
+    <h3>Mark <span>Complete?</span></h3>
+    <p>Leave a note for the customer about what was done, parts replaced, and any recommendations.</p>
+    <textarea class="modal-textarea" id="completeFeedback" placeholder="e.g. Changed oil and filter. Brake pads at 30% — recommend replacement in 3 months."></textarea>
+    <div class="modal-btns">
+      <button class="btn-confirm" id="completeConfirmBtn">✅ Mark as Completed</button>
+      <button class="btn-cancel"  onclick="closeModal('completeModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   MECHBOOK EL — DASHBOARD (fully API-driven)
+   All data lives in db.json via server.js.
+   Multiple users on multiple devices share live data.
+   Auto-refreshes every 30 seconds.
+═══════════════════════════════════════════════════ */
+
+const API   = 'http://localhost:3000/api';
+const TOKEN = localStorage.getItem('mb_token');
+
+/* redirect if not logged in */
+if (!TOKEN) window.location.href = 'index.html';
+
+const USER = {
+  fname:    localStorage.getItem('mb_fname')    || '',
+  lname:    localStorage.getItem('mb_lname')    || '',
+  fullname: localStorage.getItem('mb_fullname') || 'Guest User',
+  role:     localStorage.getItem('mb_role')     || 'owner',
+  email:    localStorage.getItem('mb_email')    || '—',
+  phone:    localStorage.getItem('mb_phone')    || '—',
+  wsname:   localStorage.getItem('mb_wsname')   || ''
+};
+const ROLE     = USER.role;
+const FNAME    = USER.fname || USER.fullname.split(' ')[0];
+const INITIALS = USER.fullname.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
+
+/* ── API helper ── */
+async function api(path, opts={}) {
+  const res  = await fetch(API + path, {
+    ...opts,
+    headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+TOKEN, ...(opts.headers||{}) }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Server error');
+  return data;
+}
+
+/* ── INIT ── */
+(function init(){
+  document.getElementById('avatarInitial').textContent = INITIALS;
+  document.getElementById('sidebarName').textContent   = USER.fullname;
+  document.getElementById('sidebarRole').textContent   = ROLE==='mechanic' ? '🔧 Workshop Owner' : '🚗 Car Owner';
+  const now = new Date();
+  document.getElementById('topbarSub').textContent =
+    now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' · East London, EC';
+
+  const h = document.getElementById('hamburger');
+  h.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+  window.addEventListener('resize', () => {
+    h.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+    if (window.innerWidth > 768) closeSidebar();
+  });
+
+  if (ROLE === 'mechanic') {
+    document.getElementById('topbarTitle').innerHTML = `Mechanic <span>Dashboard</span>`;
+    document.getElementById('mechanic-nav').style.display = 'block';
+    loadWorkshopBookings();
+    loadNotifications();
+    showPanel('mec-overview', null);
+    buildMecProfile();
+  } else {
+    document.getElementById('topbarTitle').innerHTML = `Car Owner <span>Dashboard</span>`;
+    document.getElementById('owner-nav').style.display = 'block';
+    loadOwnerBookings();
+    loadNotifications();
+    showPanel('overview', null);
+    buildProfile();
+  }
+
+  setInterval(refreshAll, 30000); // live refresh every 30s
+})();
+
+function refreshAll() {
+  if (ROLE === 'mechanic') loadWorkshopBookings();
+  else loadOwnerBookings();
+  loadNotifications();
+}
+
+/* ════════════════════════════════════
+   CAR OWNER — bookings
+════════════════════════════════════ */
+async function loadOwnerBookings() {
+  setLoad('bookings-list');
+  setLoad('overview-bookings-list');
+  try {
+    const { bookings } = await api('/bookings/mine');
+    document.getElementById('stat-total').textContent     = bookings.length;
+    document.getElementById('stat-pending').textContent   = bookings.filter(b=>b.status==='Pending').length;
+    document.getElementById('stat-confirmed').textContent = bookings.filter(b=>['Confirmed','In Progress'].includes(b.status)).length;
+    document.getElementById('stat-done').textContent      = bookings.filter(b=>b.status==='Completed').length;
+    renderOwnerBookings(bookings);
+    renderTracker(bookings);
+  } catch(e) {
+    apiError('bookings-list', e.message);
+    apiError('overview-bookings-list', e.message);
+  }
+}
+
+function renderOwnerBookings(bookings) {
+  const recent = [...bookings].reverse().slice(0,3);
+  const all    = [...bookings].reverse();
+
+  if (!bookings.length) {
+    const empty = emptyState('📅','No Bookings Yet',`Hi ${FNAME}! You haven't made any bookings yet.`,'booking.html','Book a Workshop');
+    document.getElementById('overview-bookings-list').innerHTML = empty;
+    document.getElementById('bookings-list').innerHTML = empty;
+    return;
+  }
+  document.getElementById('overview-bookings-list').innerHTML = '<div class="bookings-list">' + recent.map(ownerBookingCard).join('') + '</div>';
+  document.getElementById('bookings-list').innerHTML          = '<div class="bookings-list">' + all.map(ownerBookingCard).join('') + '</div>';
+}
+
+function ownerBookingCard(b) {
+  const cls = {Pending:'status-pending',Confirmed:'status-confirmed','In Progress':'status-progress',Completed:'status-done',Declined:'status-declined'}[b.status] || 'status-pending';
+  const fb  = b.feedback ? `<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem;font-style:italic;">💬 Mechanic note: ${esc(b.feedback)}</div>` : '';
+  return `<div class="booking-card">
+    <div class="booking-ws-icon">🔧</div>
+    <div class="booking-info">
+      <div class="booking-title">${esc(b.workshop)}</div>
+      <div class="booking-sub">${esc(b.service)}${b.vehicle?' – '+esc(b.vehicle):''}</div>
+      <div class="booking-meta"><span>📅 ${esc(b.date)}</span><span>⏰ ${esc(b.time||'—')}</span><span style="color:var(--primary);">Ref: ${esc(b.ref)}</span></div>
+      ${fb}
+    </div>
+    <div class="booking-right"><span class="status-badge ${cls}">${esc(b.status)}</span></div>
+  </div>`;
+}
+
+function renderTracker(bookings) {
+  const el     = document.getElementById('tracker-content');
+  const active = bookings.find(b=>b.status==='In Progress') || bookings.find(b=>b.status==='Confirmed');
+  if (!active) { el.innerHTML = emptyState('🚗','No Active Jobs',`${FNAME}, no vehicles are currently being tracked.`,'booking.html','Book a Service'); return; }
+  const labels  = ['Booked','Dropped Off','In Progress','Quality Check','Ready'];
+  const icons   = ['📅','🚗','🔧','🔍','✅'];
+  const actIdx  = active.status === 'Confirmed' ? 0 : active.status === 'In Progress' ? 2 : 4;
+  let stepsHTML = '';
+  labels.forEach((lbl,i) => {
+    const done = i < actIdx, isAct = i === actIdx;
+    stepsHTML += `<div class="tracker-step"><div class="tracker-dot ${done?'done':isAct?'active':''}">${done?'✓':icons[i]}</div><div class="tracker-label ${done?'done':isAct?'active':''}">${lbl}</div></div>`;
+    if (i < labels.length-1) stepsHTML += `<div class="tracker-line ${done?'done':''}"></div>`;
+  });
+  el.innerHTML = `<div class="tracker"><div style="font-weight:900;font-size:.95rem;margin-bottom:1.2rem;">${esc(active.vehicle||'Your Vehicle')} · ${esc(active.workshop)} · ${esc(active.date)}</div><div class="tracker-steps">${stepsHTML}</div></div>`;
+}
+
+/* ════════════════════════════════════
+   MECHANIC — workshop bookings
+════════════════════════════════════ */
+async function loadWorkshopBookings() {
+  setLoad('mec-requests-list');
+  setLoad('mec-active-list');
+  setLoad('mec-overview-requests');
+  try {
+    const { bookings } = await api('/bookings/workshop');
+    const pending   = bookings.filter(b=>b.status==='Pending').length;
+    const active    = bookings.filter(b=>['Confirmed','In Progress'].includes(b.status)).length;
+    const done      = bookings.filter(b=>b.status==='Completed').length;
+    document.getElementById('mec-stat-pending').textContent = pending;
+    document.getElementById('mec-stat-active').textContent  = active;
+    document.getElementById('mec-stat-done').textContent    = done;
+    document.getElementById('mec-stat-total').textContent   = bookings.length;
+    if (pending > 0) { const b=document.getElementById('mec-req-badge'); b.textContent=pending; b.style.display='inline-block'; document.getElementById('topbar-notif-dot').style.display='inline-block'; }
+    renderMecRequests(bookings);
+    renderMecActive(bookings);
+    renderMecOverview(bookings);
+    buildBarChart(bookings);
+  } catch(e) {
+    apiError('mec-requests-list', e.message);
+  }
+}
+
+function renderMecOverview(bookings) {
+  const el      = document.getElementById('mec-overview-requests');
+  const pending = bookings.filter(b=>b.status==='Pending');
+  if (!pending.length) { el.innerHTML = `<div style="color:var(--muted);padding:1.5rem;text-align:center;background:var(--card);border:2px dashed var(--border);border-radius:12px;font-size:.88rem;">No pending requests right now.</div>`; return; }
+  el.innerHTML = pending.slice(0,2).map((r,i)=>requestCard(r,i,'ov')).join('');
+}
+
+function renderMecRequests(bookings) {
+  const el     = document.getElementById('mec-requests-list');
+  const sorted = [...bookings].sort((a,b) => a.status==='Pending'?-1:1);
+  if (!sorted.length) { el.innerHTML = empty3('📋','No Booking Requests Yet','New requests from car owners will appear here.'); return; }
+  el.innerHTML = sorted.map((r,i)=>requestCard(r,i,'req')).join('');
+}
+
+function renderMecActive(bookings) {
+  const el     = document.getElementById('mec-active-list');
+  const active = bookings.filter(b=>['Confirmed','In Progress'].includes(b.status));
+  if (!active.length) { el.innerHTML = empty3('🔧','No Active Jobs Yet','Accepted bookings will appear here as active jobs.'); return; }
+  el.innerHTML = active.map(b=>`
+  <div class="booking-card">
+    <div class="booking-ws-icon">🚗</div>
+    <div class="booking-info">
+      <div class="booking-title">${esc(b.ownerName)}</div>
+      <div class="booking-sub">${esc(b.vehicle)} · ${esc(b.service)}</div>
+      <div class="booking-meta">
+        <span>📅 ${esc(b.date)}</span><span>⏰ ${esc(b.time)}</span>
+        <span>📞 ${esc(b.ownerPhone)}</span>
+        <span style="color:var(--primary);">Ref: ${esc(b.ref)}</span>
+      </div>
+      ${b.desc?`<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem;font-style:italic;">💬 ${esc(b.desc)}</div>`:''}
+    </div>
+    <div class="booking-right">
+      <span class="status-badge ${b.status==='In Progress'?'status-progress':'status-confirmed'}">${esc(b.status)}</span>
+      ${b.status==='Confirmed'?`<button class="action-btn btn-progress" onclick="updateStatus('${b.ref}','In Progress')">🔧 In Progress</button>`:''}
+      <button class="action-btn btn-done" onclick="openCompleteModal('${b.ref}')">✅ Mark Done</button>
+    </div>
+  </div>`).join('');
+}
+
+function requestCard(r, idx, ctx) {
+  const initials = r.ownerName ? r.ownerName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) : '?';
+  const isPending = r.status === 'Pending';
+  return `<div class="request-card" id="reqcard-${ctx}-${idx}">
+    <div class="req-avatar">${initials}</div>
+    <div class="req-info">
+      <div class="req-name">${esc(r.ownerName)}</div>
+      <div class="req-detail">🚗 ${esc(r.vehicle)} · ${esc(r.service)}</div>
+      <div class="req-detail">📞 ${esc(r.ownerPhone)} · ✉️ ${esc(r.ownerEmail)}</div>
+      <div class="req-time">📅 ${esc(r.date)} at ${esc(r.time)}</div>
+      <div class="req-ref">Ref: ${esc(r.ref)}</div>
+      ${r.desc?`<div class="req-detail" style="margin-top:.25rem;font-style:italic;">💬 ${esc(r.desc)}</div>`:''}
+    </div>
+    <div class="req-actions">
+      ${isPending
+        ? `<button class="action-btn btn-accept"  onclick="updateStatus('${r.ref}','Confirmed')">✅ Accept</button>
+           <button class="action-btn btn-decline" onclick="openDeclineModal('${r.ref}')">❌ Decline</button>`
+        : `<span style="font-size:.8rem;font-weight:800;color:var(--muted);">${esc(r.status)}</span>`
+      }
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════
+   STATUS UPDATES
+════════════════════════════════════ */
+async function updateStatus(ref, status, feedback='') {
+  try {
+    await api('/bookings/'+ref+'/status', { method:'PATCH', body:JSON.stringify({status,feedback}) });
+    showToast(
+      status==='Confirmed'   ? '✅ Booking confirmed! Customer notified.' :
+      status==='In Progress' ? '🔧 Status updated to In Progress.' :
+      status==='Completed'   ? '🏁 Job completed! Customer notified.' :
+                               'Booking declined. Customer notified.',
+      status==='Declined' ? 'error' : 'success'
+    );
+    setTimeout(loadWorkshopBookings, 600);
+    setTimeout(loadNotifications, 700);
+  } catch(e) { showToast('Error: '+e.message, 'error'); }
+}
+
+let _declineRef = null;
+function openDeclineModal(ref) {
+  _declineRef = ref;
+  document.getElementById('declineFeedback').value = '';
+  document.getElementById('declineModal').classList.add('show');
+  document.getElementById('declineConfirmBtn').onclick = async () => {
+    const fb = document.getElementById('declineFeedback').value.trim();
+    closeModal('declineModal');
+    await updateStatus(_declineRef, 'Declined', fb);
+  };
+}
+
+let _completeRef = null;
+function openCompleteModal(ref) {
+  _completeRef = ref;
+  document.getElementById('completeFeedback').value = '';
+  document.getElementById('completeModal').classList.add('show');
+  document.getElementById('completeConfirmBtn').onclick = async () => {
+    const fb = document.getElementById('completeFeedback').value.trim();
+    closeModal('completeModal');
+    await updateStatus(_completeRef, 'Completed', fb);
+  };
+}
+
+/* ════════════════════════════════════
+   NOTIFICATIONS
+════════════════════════════════════ */
+async function loadNotifications() {
+  try {
+    const { notifications } = await api('/notifications');
+    const el     = document.getElementById('notif-list');
+    const unread = notifications.filter(n=>!n.read).length;
+
+    /* update badges */
+    const ob = document.getElementById(ROLE==='mechanic'?'mec-notif-badge':'owner-notif-badge');
+    ob.textContent = unread; ob.style.display = unread > 0 ? 'inline-block' : 'none';
+    document.getElementById('topbar-notif-dot').style.display = unread > 0 ? 'inline-block' : 'none';
+
+    if (!notifications.length) { el.innerHTML='<div style="color:var(--muted);text-align:center;padding:2rem;font-size:.9rem;">No notifications yet.</div>'; return; }
+    el.innerHTML = notifications.map(n=>`
+    <div class="notif-item ${!n.read?'unread':''}">
+      <div class="notif-icon">${n.icon||'🔔'}</div>
+      <div class="notif-body">
+        <div class="notif-title">${esc(n.title||'Notification')}</div>
+        <div class="notif-msg">${esc(n.msg||'')}</div>
+        <div class="notif-time">${esc(n.time||'')}</div>
+      </div>
+      ${!n.read?'<div class="unread-dot"></div>':''}
+    </div>`).join('');
+  } catch(e) { /* silent on notification errors */ }
+}
+
+async function markAllRead() {
+  try {
+    await api('/notifications/read', {method:'PATCH'});
+    document.querySelectorAll('.notif-item.unread').forEach(n => {
+      n.classList.remove('unread');
+      const d = n.querySelector('.unread-dot'); if(d) d.remove();
+    });
+    document.getElementById('topbar-notif-dot').style.display = 'none';
+    const ob = document.getElementById(ROLE==='mechanic'?'mec-notif-badge':'owner-notif-badge');
+    ob.style.display = 'none';
+  } catch(e) {}
+}
+
+/* ════════════════════════════════════
+   PROFILE PANELS
+════════════════════════════════════ */
+function buildProfile() {
+  document.getElementById('profile-content').innerHTML=`
+  <div class="profile-card">
+    <div class="profile-avatar-large">${INITIALS}</div>
+    <div class="profile-name-big">${esc(USER.fullname)}</div>
+    <span class="profile-role-tag">🚗 Car Owner · East London</span>
+    <div class="profile-details">
+      <div class="profile-row"><span class="profile-row-label">Email</span><span class="profile-row-val">${esc(USER.email)}</span></div>
+      <div class="profile-row"><span class="profile-row-label">Phone</span><span class="profile-row-val">${esc(USER.phone)}</span></div>
+    </div>
+  </div>`;
+}
+
+function buildMecProfile() {
+  document.getElementById('mec-profile-content').innerHTML=`
+  <div class="profile-card">
+    <div class="profile-avatar-large">${INITIALS}</div>
+    <div class="profile-name-big">${esc(USER.fullname)}</div>
+    <span class="profile-role-tag">🔧 Workshop Owner · East London</span>
+    <div class="profile-details">
+      <div class="profile-row"><span class="profile-row-label">Email</span><span class="profile-row-val">${esc(USER.email)}</span></div>
+      <div class="profile-row"><span class="profile-row-label">Phone</span><span class="profile-row-val">${esc(USER.phone)}</span></div>
+      <div class="profile-row"><span class="profile-row-label">Workshop</span><span class="profile-row-val">${esc(USER.wsname||'Not set')}</span></div>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════
+   BAR CHART
+════════════════════════════════════ */
+function buildBarChart(bookings) {
+  const counts = [0,0,0,0,0,0,0];
+  bookings.forEach(b => { const d = new Date(b.bookedAt); counts[d.getDay()===0?6:d.getDay()-1]++; });
+  const max  = Math.max(...counts, 1);
+  const chart= document.getElementById('barChart');
+  if (!chart) return;
+  chart.innerHTML = counts.map(v => `
+    <div class="bar-wrap">
+      <div class="bar" style="height:${(v/max)*90}px;">
+        <div class="bar-tooltip">${v}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════
+   UTILITIES
+════════════════════════════════════ */
+function esc(s){ return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'—'; }
+function setLoad(id){ const el=document.getElementById(id); if(el)el.innerHTML=`<div class="loading-box"><span class="spin">⚙️</span>Loading from server…</div>`; }
+function apiError(id,msg){ const el=document.getElementById(id); if(el)el.innerHTML=`<div class="api-error">⚠️ ${esc(msg)}<code>Make sure the backend is running: node server.js</code></div>`; }
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>t.className='toast',3200);
+}
+function emptyState(icon,title,msg,href,label){
+  return `<div class="empty-state"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-msg">${msg}</div><a href="${href}" class="empty-btn">${label}</a></div>`;
+}
+function empty3(icon,title,msg){
+  return `<div class="empty-state"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-msg">${msg}</div></div>`;
+}
+function showPanel(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const p=document.getElementById('panel-'+id);
+  if(p) p.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  closeSidebar();
+}
+function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function openLogoutModal(){ document.getElementById('logoutModal').classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function doLogout(){
+  ['mb_token','mb_fname','mb_lname','mb_fullname','mb_role','mb_email','mb_phone','mb_wsname'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='index.html';
+}
+</script>
+</body>
+</html>

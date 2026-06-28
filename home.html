@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MechBook EL – Book a Mechanic Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- LIVE TIME BAR -->
+<div id="current-time"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">Mech<span><a href="home.html">Book</a></span> EL</div>
+  <div class="nav-actions">
+    <a href="index.html" class="nav-back">← Back</a>
+    <button class="btn-ghost" onclick="showLoginPanel()">Login</button>
+    <button class="btn-red"   onclick="showRegisterPanel()">Sign Up</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+
+    <div class="hero-badge">
+      🔧 East London's #1 Mechanic Booking Platform
+    </div>
+
+    <h1>
+      Book Your <br>
+      <span class="line2">Mechanic Online</span>
+    </h1>
+
+    <p>
+      Skip the queue. Book your workshop appointment in minutes
+      and get real-time updates on your vehicle's repair status.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#" class="btn-hero-main" onclick="showAuthPopup(event)">
+        🔍 Find a Workshop
+      </a>
+      <a href="#" class="btn-hero-ghost" onclick="showRegisterPanel(); return false;">
+        Create Free Account
+      </a>
+    </div>
+
+    <!-- HERO GALLERY -->
+    <div class="hero-gallery">
+      <div class="hero-main-image">
+        <img src="job1.jpeg" alt="Mechanic working on a car"/>
+      </div>
+      <div class="hero-small-card card1">
+        <img src="https://images.unsplash.com/photo-1613214149922-f1809c99b414?q=80&w=800&auto=format&fit=crop" alt="Professional Repairs"/>
+        <div>
+          <h4>Professional Repairs</h4>
+          <p>Trusted East London mechanics</p>
+        </div>
+      </div>
+      <div class="hero-small-card card2">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800&auto=format&fit=crop" alt="Fast Booking"/>
+        <div>
+          <h4>Fast Booking</h4>
+          <p>Book online in minutes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Workshops</div></div>
+      <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Bookings Made</div></div>
+      <div class="stat-item"><div class="stat-num">4.7★</div><div class="stat-label">Average Rating</div></div>
+      <div class="stat-item"><div class="stat-num">EL</div><div class="stat-label">East London</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-label">
+    <a href="#" class="why-link" onclick="showInfo(event)">Why MechBook? ↗</a>
+  </div>
+  <h2 class="section-title">Everything You Need,<br>Nothing You Don't</h2>
+  <p class="section-sub">Designed for East London car owners who are tired of wasting time at workshops.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon">📅</div>
+      <h3>Online Booking</h3>
+      <p>Book your preferred time slot instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📍</div>
+      <h3>Nearby Workshops</h3>
+      <p>Find trusted mechanics near you.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⏰</div>
+      <h3>Trading Hours</h3>
+      <p>
+        <strong>Mon – Fri:</strong> 06:00 – 19:00<br>
+        <strong>Saturday:</strong> 08:00 – 14:00<br>
+        <strong>Public Holidays:</strong> Closed
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔔</div>
+      <h3>Live Updates</h3>
+      <p>Track your repair progress in real-time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     AUTH POPUP  (Find a Workshop)
+     ════════════════════════════════ -->
+<div class="auth-popup" id="authPopup">
+  <div class="auth-box">
+    <button class="close-popup" onclick="closePopup()">✕</button>
+    <div class="auth-icon">🔒</div>
+    <h2>Login Required</h2>
+    <p>You must login or create an account before booking a workshop.</p>
+    <div class="auth-buttons">
+      <button onclick="showLoginPanel()"   class="auth-login">Login</button>
+      <button onclick="showRegisterPanel()" class="auth-register">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LOGIN PANEL OVERLAY
+     ════════════════════════════════ -->
+<div class="panel-overlay" id="loginOverlay" onclick="closePanelOverlay('loginOverlay')">
+  <div class="panel-box" onclick="event.stopPropagation()">
+    <button class="close-popup" onclick="closePanelOverlay('loginOverlay')">✕</button>
+    <div class="big-logo">Mech<span>Book</span> EL</div>
+    <p class="panel-sub">Welcome back — log in to manage your bookings.</p>
+
+    <div class="user-type" style="margin-bottom:1.2rem;">
+      <button class="type-btn sel" onclick="selLoginType('owner',this)">🚗 Car Owner</button>
+      <button class="type-btn"     onclick="selLoginType('mechanic',this)">🔧 Mechanic</button>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">✉️</span>
+        <input type="email" id="hl-email" placeholder="you@email.com"/>
+      </div>
+      <div class="err-msg" id="hl-email-err">Please enter a valid email address.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Password <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="hl-pw" placeholder="Enter your password"/>
+        <button class="pw-toggle" type="button" onclick="togglePw('hl-pw',this)">👁️</button>
+      </div>
+      <div class="err-msg" id="hl-pw-err">Password must be at least 6 characters.</div>
+    </div>
+
+    <button class="submit-btn" onclick="doHomeLogin()">Login to MechBook EL</button>
+
+    <div class="form-foot" style="margin-top:1rem;">
+      Don't have an account?
+      <a href="#" onclick="closePanelOverlay('loginOverlay'); showRegisterPanel(); return false;">Sign up free</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     REGISTER PANEL OVERLAY
+     ════════════════════════════════ -->
+<div class="panel-overlay" id="registerOverlay" onclick="closePanelOverlay('registerOverlay')">
+  <div class="panel-box" onclick="event.stopPropagation()">
+    <button class="close-popup" onclick="closePanelOverlay('registerOverlay')">✕</button>
+    <div class="big-logo">Mech<span>Book</span> EL</div>
+    <p class="panel-sub">Create your free account today.</p>
+
+    <div class="user-type" style="margin-bottom:1.2rem;">
+      <button class="type-btn sel" id="hr-type-owner"    onclick="selRegType('owner',this)">🚗 Car Owner</button>
+      <button class="type-btn"     id="hr-type-mechanic" onclick="selRegType('mechanic',this)">🔧 Workshop Owner</button>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>First Name <span class="req">*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="hr-fname" placeholder="e.g. Sipho"/>
+        </div>
+        <div class="err-msg" id="hr-fname-err">Enter your first name.</div>
+      </div>
+      <div class="form-group">
+        <label>Last Name <span class="req">*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="hr-lname" placeholder="e.g. Dlamini"/>
+        </div>
+        <div class="err-msg" id="hr-lname-err">Enter your last name.</div>
+      </div>
+    </div>
+
+    <div class="form-group" id="hr-ws-group" style="display:none;">
+      <label>Workshop Name <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">🔧</span>
+        <input type="text" id="hr-wsname" placeholder="e.g. CARtime Nahoon"/>
+      </div>
+      <div class="err-msg" id="hr-wsname-err">Enter your workshop name.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">✉️</span>
+        <input type="email" id="hr-email" placeholder="you@email.com"/>
+      </div>
+      <div class="err-msg" id="hr-email-err">Enter a valid email address.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">📞</span>
+        <input type="tel" id="hr-phone" placeholder="e.g. 083 456 7890"/>
+      </div>
+      <div class="err-msg" id="hr-phone-err">Enter a valid SA phone number.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Password <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="hr-pw" placeholder="Create a strong password"/>
+        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw',this)">👁️</button>
+      </div>
+      <div class="err-msg" id="hr-pw-err">Password must be at least 8 characters.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Confirm Password <span class="req">*</span></label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="hr-pw2" placeholder="Repeat your password"/>
+        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw2',this)">👁️</button>
+      </div>
+      <div class="err-msg" id="hr-pw2-err">Passwords do not match.</div>
+    </div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="hr-terms"/>
+      <label for="hr-terms" style="text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted);font-weight:400;">
+        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        I understand my data is protected under the POPI Act.
+      </label>
+    </div>
+    <div class="err-msg" id="hr-terms-err" style="margin-top:-.5rem;margin-bottom:.5rem;">
+      You must accept the terms to continue.
+    </div>
+
+    <button class="submit-btn" onclick="doHomeRegister()">Create My Account</button>
+
+    <div class="form-foot" style="margin-top:1rem;">
+      Already have an account?
+      <a href="#" onclick="closePanelOverlay('registerOverlay'); showLoginPanel(); return false;">Log in here</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     MECHBOOK INFO OVERLAY
+     ════════════════════════════════ -->
+<div class="panel-overlay" id="infoOverlay" onclick="closeInfo()">
+  <div class="panel-box info-box" onclick="event.stopPropagation()">
+    <button class="close-popup" onclick="closeInfo()">✕</button>
+
+    <div class="big-logo" style="margin-bottom:.2rem;">Mech<span>Book</span> EL</div>
+    <p class="panel-sub" style="margin-bottom:1.5rem;">East London's Online Mechanic Booking Platform</p>
+
+    <!-- About -->
+    <div class="info-section">
+      <div class="info-section-title">🔧 About MechBook EL</div>
+      <p class="info-text">
+        MechBook EL is East London's first dedicated online workshop booking platform. We connect
+        car owners with trusted, verified mechanics across the city — no phone calls, no queues,
+        no surprises. Book in minutes, track your repair in real time, and get back on the road faster.
+      </p>
+      <ul class="info-list">
+        <li>✅ Real-time booking confirmations</li>
+        <li>✅ Live repair status updates</li>
+        <li>✅ Verified, rated workshops only</li>
+        <li>✅ Secure payments &amp; POPI Act compliant</li>
+        <li>✅ 100% free for car owners to join</li>
+      </ul>
+    </div>
+
+    <!-- Workshops -->
+    <div class="info-section">
+      <div class="info-section-title">🏭 Our Partner Workshops</div>
+      <div class="workshops-grid">
+
+        <div class="ws-card">
+          <div class="ws-icon">🚗</div>
+          <div>
+            <div class="ws-name">CaRline Nahoon</div>
+            <div class="ws-meta">Nahoon, East London</div>
+            <div class="ws-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+        <div class="ws-card">
+          <div class="ws-icon">🔩</div>
+          <div>
+            <div class="ws-name">P &amp; R Motors</div>
+            <div class="ws-meta">East London CBD</div>
+            <div class="ws-stars">⭐⭐⭐⭐½</div>
+          </div>
+        </div>
+
+        <div class="ws-card">
+          <div class="ws-icon">🛠️</div>
+          <div>
+            <div class="ws-name">Ian's Auto Clinic</div>
+            <div class="ws-meta">Gonubie, East London</div>
+            <div class="ws-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+        <div class="ws-card">
+          <div class="ws-icon">⚙️</div>
+          <div>
+            <div class="ws-name">MD Enterprises</div>
+            <div class="ws-meta">Cambridge, East London</div>
+            <div class="ws-stars">⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+        <div class="ws-card">
+          <div class="ws-icon">🏁</div>
+          <div>
+            <div class="ws-name">BMB Auto</div>
+            <div class="ws-meta">Vincent, East London</div>
+            <div class="ws-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="submit-btn" style="margin-top:.5rem;" onclick="closeInfo()">Got It — Back to Home</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SUCCESS OVERLAY
+     ════════════════════════════════ -->
+<div class="success-overlay" id="homeSuccessOverlay">
+  <div class="success-box">
+    <div class="success-icon" id="homeSuccessIcon">🎉</div>
+    <h2 id="homeSuccessTitle">Welcome!</h2>
+    <p id="homeSuccessMsg">You have successfully logged in.</p>
+    <button class="go-btn" onclick="window.location.href='dashboard.html'">Go to Dashboard →</button>
+  </div>
+</div>
+
+<div class="page-footer">
+  © 2026 <span>MechBook EL</span> · East London, Eastern Cape · HCI26W0 Project
+</div>
+
+<script src="home.js"></script>
+</body>
+</html>

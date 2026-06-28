@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MechBook EL – Find a Workshop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#D72638;--dark:#f1f2f3;--card:#4f6078;--border:#21262D;--accent:#F59E0B;--text:#F0F6FC;--muted:#8B949E;--green:#3FB950;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--text);}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
+
+nav{position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(13,17,23,.97);border-bottom:2px solid var(--border);backdrop-filter:blur(12px);}
+.logo{font-family:'Bebas Neue';font-size:1.9rem;letter-spacing:3px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--red);}
+nav ul{list-style:none;display:flex;gap:2rem;}
+nav ul a{color:var(--muted);text-decoration:none;font-weight:700;font-size:.9rem;transition:.2s;}
+nav ul a:hover,nav ul a.active{color:var(--text);}
+.btn-red{background:var(--red);border:none;color:#fff;padding:.45rem 1.3rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;}
+.btn-red:hover{background:#FF4757;}
+
+.hero{background:linear-gradient(135deg,#130309 0%,#0D1117 100%);padding:3.5rem 2rem 2.5rem;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-family:'Bebas Neue';font-size:clamp(2.5rem,5vw,4rem);letter-spacing:3px;}
+.hero h1 span{color:var(--red);}
+.hero p{color:var(--muted);margin:.5rem 0 2rem;}
+
+.search-wrap{max-width:640px;margin:0 auto;}
+.search-bar{display:flex;background:var(--card);border-radius:10px;overflow:hidden;border:2px solid var(--border);transition:.2s;}
+.search-bar:focus-within{border-color:var(--red);}
+.search-bar input{flex:1;padding:.9rem 1.2rem;background:transparent;border:none;color:var(--text);font-family:'Nunito';font-size:1rem;outline:none;}
+.search-bar button{background:var(--red);border:none;padding:0 1.5rem;color:#fff;font-weight:800;font-family:'Nunito';cursor:pointer;font-size:1rem;transition:.2s;}
+.search-bar button:hover{background:#FF4757;}
+
+.filters{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;}
+.filter-btn{background:var(--card);border:2px solid var(--border);color:var(--muted);padding:.4rem 1rem;border-radius:20px;font-family:'Nunito';font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--red);color:var(--text);}
+
+.main{max-width:1200px;margin:0 auto;padding:2rem;}
+.results-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.results-bar h2{font-size:1rem;font-weight:700;color:var(--muted);}
+.results-bar h2 b{color:var(--text);}
+.sort-sel{background:var(--card);border:2px solid var(--border);color:var(--text);padding:.4rem .8rem;border-radius:8px;font-family:'Nunito';outline:none;font-size:.85rem;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
+
+.card{background:var(--card);border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:.3s;cursor:pointer;}
+.card:hover{border-color:var(--red);transform:translateY(-5px);box-shadow:0 12px 35px rgba(215,38,56,.18);}
+.card-img{width:100%;height:195px;object-fit:cover;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--border);}
+.card-img img{width:100%;height:195px;object-fit:cover;}
+.card-body{padding:1.3rem;}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;}
+.card-name{font-size:1.15rem;font-weight:900;}
+.badge{font-size:.72rem;font-weight:800;padding:.25rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.badge-open{background:rgba(63,185,80,.12);color:var(--green);border:1px solid var(--green);}
+.badge-busy{background:rgba(245,158,11,.12);color:var(--accent);border:1px solid var(--accent);}
+.badge-closed{background:rgba(215,38,56,.12);color:var(--red);border:1px solid var(--red);}
+.card-addr{color:var(--muted);font-size:.83rem;margin:.35rem 0 .6rem;}
+.stars{color:var(--accent);font-size:.88rem;}
+.stars span{color:var(--muted);font-size:.78rem;margin-left:.25rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.85rem 0;}
+.tag{background:#0D1117;border:1px solid var(--border);color:var(--muted);font-size:.73rem;padding:.2rem .6rem;border-radius:10px;}
+.card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:.9rem;border-top:1px solid var(--border);}
+.wait{font-size:.83rem;color:var(--muted);}
+.wait b{color:var(--green);}
+.book-btn{background:var(--red);color:#fff;border:none;padding:.55rem 1.3rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
+.book-btn:hover{background:#FF4757;transform:scale(1.03);}
+.phone{color:var(--muted);font-size:.78rem;margin-top:.5rem;}
+
+.empty{grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted);}
+.empty .ico{font-size:3.5rem;margin-bottom:1rem;}
+
+footer{text-align:center;padding:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem;margin-top:2rem;}
+footer span{color:var(--red);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Mech<span>Book</span> EL</a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="search.html" class="active">Workshops</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+  </ul>
+  <button class="btn-red" onclick="location.href='booking.html'">+ Book Now</button>
+</nav>
+
+<section class="hero">
+  <h1>Find a <span>Workshop</span> in East London</h1>
+  <p>Search trusted mechanics and book your appointment in minutes.</p>
+  <div class="search-wrap">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search workshop name or service…" oninput="doFilter()"/>
+      <button onclick="doFilter()">🔍 Search</button>
+    </div>
+    <div class="filters" id="filterRow">
+      <button class="filter-btn active" onclick="setF('all',this)">All</button>
+      <button class="filter-btn" onclick="setF('open',this)">Open Now</button>
+      <button class="filter-btn" onclick="setF('panel beating',this)">Panel Beating</button>
+      <button class="filter-btn" onclick="setF('tyres',this)">Tyres</button>
+      <button class="filter-btn" onclick="setF('electrical',this)">Electrical</button>
+      <button class="filter-btn" onclick="setF('service',this)">Full Service</button>
+    </div>
+  </div>
+</section>
+
+<main class="main">
+  <div class="results-bar">
+    <h2>Showing <b id="cnt">3</b> workshops near East London</h2>
+    <select class="sort-sel" onchange="doSort(this.value)">
+      <option value="rating">Top Rated</option>
+      <option value="wait">Shortest Wait</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>© 2026 <span>MechBook EL</span> · East London, Eastern Cape · HCI26W0 Project</footer>
+
+<script>
+const shops=[
+  {id:1,name:"CARtime Nahoon",addr:"Nahoon Road, East London, 5241",status:"open",label:"Open Now",rating:4.8,reviews:124,wait:20,services:["Full Service","Diagnostics","Brakes","Electrical"],img:"https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=600&q=80",phone:"043 722 1234"},
+  {id:2,name:"Ian's Auto Clinic",addr:"Oxford Street, East London, 5201",status:"open",label:"Open Now",rating:4.6,reviews:89,wait:35,services:["Panel Beating","Spray Painting","Tyres","Full Service"],img:"https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&q=80",phone:"043 743 5678"},
+  {id:3,name:"P&R Motors",addr:"Fleet Street, Southernwood, East London",status:"busy",label:"Busy – Slots Available",rating:4.3,reviews:57,wait:60,services:["Tyres","Wheel Alignment","Suspension","Electrical"],img:"https://images.unsplash.com/photo-1632823471565-1ecdf5c6da03?w=600&q=80",phone:"043 731 9012"}
+];
+let activeF='all';
+function stars(r){let s='';for(let i=1;i<=5;i++)s+=i<=Math.round(r)?'★':'☆';return s;}
+function badgeCls(s){return s==='open'?'badge-open':s==='busy'?'badge-busy':'badge-closed';}
+function render(list){
+  document.getElementById('cnt').textContent=list.length;
+  const g=document.getElementById('grid');
+  if(!list.length){g.innerHTML=`<div class="empty"><div class="ico">🔧</div><p>No workshops found. Try a different search.</p></div>`;return;}
+  g.innerHTML=list.map(w=>`
+    <div class="card">
+      <div class="card-img"><img src="${w.img}" alt="${w.name}" onerror="this.parentElement.innerHTML='🔧'"/></div>
+      <div class="card-body">
+        <div class="card-top"><div class="card-name">${w.name}</div><span class="badge ${badgeCls(w.status)}">${w.label}</span></div>
+        <div class="card-addr">📍 ${w.addr}</div>
+        <div class="stars">${stars(w.rating)}<span>(${w.reviews} reviews)</span></div>
+        <div class="tags">${w.services.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        <div class="phone">📞 ${w.phone}</div>
+        <div class="card-foot">
+          <div class="wait">⏱ Est. wait: <b>${w.wait} min</b></div>
+          <a href="booking.html?shop=${encodeURIComponent(w.name)}" class="book-btn">Book Now</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function doFilter(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  render(shops.filter(w=>{
+    const ms=w.name.toLowerCase().includes(q)||w.services.some(s=>s.toLowerCase().includes(q))||w.addr.toLowerCase().includes(q);
+    const mf=activeF==='all'||w.status===activeF||w.services.some(s=>s.toLowerCase().includes(activeF));
+    return ms&&mf;
+  }));
+}
+function setF(v,btn){activeF=v;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');doFilter();}
+function doSort(v){
+  let s=[...shops];
+  if(v==='rating')s.sort((a,b)=>b.rating-a.rating);
+  if(v==='wait')s.sort((a,b)=>a.wait-b.wait);
+  if(v==='name')s.sort((a,b)=>a.name.localeCompare(b.name));
+  render(s);
+}
+render(shops);
+
+// auto-fill search from URL
+const urlQ=new URLSearchParams(location.search).get('q');
+if(urlQ){document.getElementById('searchInput').value=urlQ;doFilter();}
+</script>
+</body>
+</html>

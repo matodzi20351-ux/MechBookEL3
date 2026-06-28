@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MechBook EL – Book an Appointment</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --accent:#0EA5E9;
+  --secondary:#EFF6FF;
+  --bg:#F4F7FB;
+  --card:#FFFFFF;
+  --text:#111827;
+  --muted:#6B7280;
+  --border:#D1D5DB;
+  --success:#16A34A;
+  --warning:#F59E0B;
+  --danger:#DC2626;
+  --shadow:rgba(15,23,42,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+nav{
+  position:sticky;top:0;z-index:999;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2.5rem;
+  background:#fff;border-bottom:2px solid var(--border);
+  box-shadow:0 2px 10px var(--shadow);
+}
+.logo{font-family:'Bebas Neue';font-size:1.9rem;letter-spacing:3px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--primary);}
+.nav-right{display:flex;align-items:center;gap:.8rem;}
+.btn-ghost{background:transparent;border:2px solid var(--border);color:var(--text);padding:.45rem 1.1rem;border-radius:8px;font-family:'Nunito';font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
+.btn-back{background:var(--secondary);border:2px solid var(--border);color:var(--primary);padding:.45rem 1.1rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
+.btn-back:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.page-wrap{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+.page-header{margin-bottom:2rem;}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);margin-bottom:1rem;}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:.2s;}
+.breadcrumb a:hover{color:var(--primary);}
+.breadcrumb span{color:var(--primary);}
+.page-header h1{font-family:'Bebas Neue';font-size:2.6rem;letter-spacing:2px;}
+.page-header h1 span{color:var(--primary);}
+.page-header p{color:var(--muted);margin-top:.4rem;}
+.steps-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap;}
+.step-item{display:flex;align-items:center;gap:.5rem;flex:1;min-width:100px;}
+.step-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;flex-shrink:0;border:2px solid var(--border);color:var(--muted);}
+.step-circle.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.step-circle.done{background:var(--success);border-color:var(--success);color:#fff;}
+.step-label{font-size:.78rem;font-weight:700;color:var(--muted);}
+.step-label.active{color:var(--text);}
+.step-line{flex:1;height:2px;background:var(--border);border-radius:2px;}
+.step-line.done{background:var(--success);}
+.form-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:2.2rem;box-shadow:0 6px 18px var(--shadow);}
+.form-section{margin-bottom:2.2rem;}
+.form-section-title{font-size:.95rem;font-weight:800;margin-bottom:1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:.45rem;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:.83rem;font-weight:700;color:var(--muted);}
+label .req{color:var(--danger);}
+input,select,textarea{background:#fff;border:2px solid var(--border);color:var(--text);padding:.72rem 1rem;border-radius:8px;font-family:'Nunito';font-size:.93rem;outline:none;transition:.2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+input.error,select.error,textarea.error{border-color:var(--danger)!important;background:rgba(220,38,38,.04);}
+.error-msg{font-size:.76rem;color:var(--danger);font-weight:700;display:none;}
+.error-msg.show{display:block;}
+textarea{resize:vertical;min-height:90px;}
+.prefill-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(22,163,74,.1);border:1px solid var(--success);color:var(--success);font-size:.76rem;font-weight:800;padding:.25rem .7rem;border-radius:20px;margin-bottom:1rem;}
+.ws-select-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem;margin-top:.5rem;}
+.ws-option{border:2px solid var(--border);border-radius:10px;padding:.9rem;cursor:pointer;transition:.2s;background:#fff;}
+.ws-option:hover{border-color:var(--primary);}
+.ws-option.selected{border-color:var(--primary);background:var(--secondary);}
+.ws-name{font-weight:800;font-size:.92rem;margin-bottom:.2rem;}
+.ws-detail{color:var(--muted);font-size:.76rem;}
+.ws-badge{display:inline-block;font-size:.68rem;font-weight:800;padding:.12rem .45rem;border-radius:10px;margin-top:.35rem;}
+.open-b{background:rgba(22,163,74,.1);color:var(--success);border:1px solid var(--success);}
+.busy-b{background:rgba(245,158,11,.1);color:var(--warning);border:1px solid var(--warning);}
+.time-slots{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.5rem;}
+.time-slot{background:#fff;border:2px solid var(--border);color:var(--muted);padding:.4rem .9rem;border-radius:8px;font-family:'Nunito';font-weight:700;font-size:.83rem;cursor:pointer;transition:.2s;}
+.time-slot:hover{border-color:var(--primary);color:var(--primary);}
+.time-slot.sel{background:var(--secondary);border-color:var(--primary);color:var(--primary);}
+.time-slot.taken{opacity:.35;cursor:not-allowed;}
+.summary-box{background:var(--secondary);border:2px solid var(--border);border-radius:10px;padding:1.1rem;margin-top:1.2rem;}
+.summary-row{display:flex;justify-content:space-between;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.87rem;}
+.summary-row:last-child{border-bottom:none;}
+.summary-row .lbl{color:var(--muted);}
+.summary-row .val{font-weight:700;}
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;padding:1rem;border-radius:10px;font-family:'Nunito';font-weight:900;font-size:1.02rem;cursor:pointer;transition:.25s;margin-top:1.2rem;letter-spacing:.5px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,235,.25);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card);border:2px solid var(--success);border-radius:18px;padding:2.5rem;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.15);animation:pop .3s ease both;}
+@keyframes pop{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal-icon{font-size:4rem;margin-bottom:.9rem;}
+.modal h2{font-family:'Bebas Neue';font-size:2.2rem;letter-spacing:2px;color:var(--success);}
+.modal-ref{display:inline-block;background:rgba(22,163,74,.1);border:1px solid var(--success);color:var(--success);font-size:.82rem;font-weight:900;padding:.3rem .9rem;border-radius:20px;margin:.6rem 0 .4rem;}
+.modal p{color:var(--muted);margin:.4rem 0 1.5rem;font-size:.92rem;line-height:1.6;}
+.modal-btns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;}
+.modal-btn{padding:.65rem 1.5rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;border:none;}
+.btn-green{background:var(--success);color:#fff;}
+.btn-green:hover{background:#15803D;}
+.btn-outline{background:transparent;border:2px solid var(--border)!important;color:var(--text);}
+.btn-outline:hover{border-color:var(--primary)!important;color:var(--primary);}
+footer{text-align:center;padding:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem;margin-top:3rem;}
+footer span{color:var(--primary);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="logo">Mech<span>Book</span> EL</a>
+  <div class="nav-right">
+    <a href="dashboard.html" class="btn-back">← Dashboard</a>
+    <a href="home.html" class="btn-ghost">Home</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="home.html">Home</a> ›
+      <a href="dashboard.html">Dashboard</a> ›
+      <span>Book Appointment</span>
+    </div>
+    <h1>Book an <span>Appointment</span></h1>
+    <p>Fill in the details below to secure your workshop slot in East London.</p>
+  </div>
+
+  <div class="steps-bar">
+    <div class="step-item"><div class="step-circle active" id="s1">1</div><div class="step-label active">Your Details</div></div>
+    <div class="step-line" id="l1"></div>
+    <div class="step-item"><div class="step-circle" id="s2">2</div><div class="step-label" id="sl2">Vehicle</div></div>
+    <div class="step-line" id="l2"></div>
+    <div class="step-item"><div class="step-circle" id="s3">3</div><div class="step-label" id="sl3">Workshop</div></div>
+    <div class="step-line" id="l3"></div>
+    <div class="step-item"><div class="step-circle" id="s4">4</div><div class="step-label" id="sl4">Confirm</div></div>
+  </div>
+
+  <div class="form-card">
+    <div id="prefillBadge" style="display:none;" class="prefill-badge">
+      ✅ Your account details have been pre-filled from your profile.
+    </div>
+
+    <!-- SECTION 1: YOUR DETAILS -->
+    <div class="form-section">
+      <div class="form-section-title">👤 Your Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="fname" placeholder="e.g. Sipho"/>
+          <span class="error-msg" id="fnameErr">Please enter your first name.</span>
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="lname" placeholder="e.g. Dlamini"/>
+          <span class="error-msg" id="lnameErr">Please enter your last name.</span>
+        </div>
+        <div class="form-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="e.g. 083 456 7890"/>
+          <span class="error-msg" id="phoneErr">Enter a valid SA phone number.</span>
+        </div>
+        <div class="form-group">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="you@email.com"/>
+          <span class="error-msg" id="emailErr">Enter a valid email address.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: VEHICLE -->
+    <div class="form-section">
+      <div class="form-section-title">🚗 Vehicle Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vehicle Make <span class="req">*</span></label>
+          <select id="make">
+            <option value="">Select make…</option>
+            <option>Toyota</option><option>Volkswagen</option><option>Ford</option>
+            <option>BMW</option><option>Mercedes-Benz</option><option>Hyundai</option>
+            <option>Kia</option><option>Nissan</option><option>Chevrolet</option>
+            <option>Renault</option><option>Peugeot</option><option>Other</option>
+          </select>
+          <span class="error-msg" id="makeErr">Please select your vehicle make.</span>
+        </div>
+        <div class="form-group">
+          <label>Vehicle Model <span class="req">*</span></label>
+          <input type="text" id="model" placeholder="e.g. Corolla, Polo, Ranger"/>
+          <span class="error-msg" id="modelErr">Please enter the vehicle model.</span>
+        </div>
+        <div class="form-group">
+          <label>Year</label>
+          <input type="number" id="year" placeholder="e.g. 2019" min="1990" max="2030"/>
+        </div>
+        <div class="form-group">
+          <label>Registration Number</label>
+          <input type="text" id="rego" placeholder="e.g. CA 123-456"/>
+        </div>
+        <div class="form-group full">
+          <label>Service Required <span class="req">*</span></label>
+          <select id="service">
+            <option value="">Select service…</option>
+            <option>Full Service (Oil, Filters, Fluids)</option>
+            <option>Brake Inspection &amp; Repair</option>
+            <option>Tyre Replacement / Rotation</option>
+            <option>Wheel Alignment</option>
+            <option>Electrical Diagnostics</option>
+            <option>Panel Beating &amp; Spray Paint</option>
+            <option>Suspension &amp; Steering</option>
+            <option>Engine Overhaul</option>
+            <option>Air Conditioning Service</option>
+            <option>Other / General Repair</option>
+          </select>
+          <span class="error-msg" id="serviceErr">Please select a service.</span>
+        </div>
+        <div class="form-group full">
+          <label>Describe the Problem (optional)</label>
+          <textarea id="desc" placeholder="Tell the mechanic what's wrong — strange noises, warning lights, etc."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: WORKSHOP -->
+    <div class="form-section">
+      <div class="form-section-title">🔧 Select Workshop <span style="color:var(--danger)">*</span></div>
+      <div class="ws-select-grid" id="wsGrid">
+        <div class="ws-option" onclick="selWS('CARtime Nahoon',this)">
+          <div class="ws-name">CARtime Nahoon</div>
+          <div class="ws-detail">📍 Nahoon Road, EL · ★ 4.8</div>
+          <span class="ws-badge open-b">Open Now</span>
+        </div>
+        <div class="ws-option" onclick="selWS(&quot;Ian\'s Auto Clinic&quot;,this)">
+          <div class="ws-name">Ian's Auto Clinic</div>
+          <div class="ws-detail">📍 Oxford Street, EL · ★ 4.6</div>
+          <span class="ws-badge open-b">Open Now</span>
+        </div>
+        <div class="ws-option" onclick="selWS('P&amp;R Motors',this)">
+          <div class="ws-name">P&amp;R Motors</div>
+          <div class="ws-detail">📍 Southernwood, EL · ★ 4.3</div>
+          <span class="ws-badge busy-b">Busy</span>
+        </div>
+        <div class="ws-option" onclick="selWS('MD Enterprises',this)">
+          <div class="ws-name">MD Enterprises</div>
+          <div class="ws-detail">📍 Cambridge, EL · ★ 4.2</div>
+          <span class="ws-badge open-b">Open Now</span>
+        </div>
+        <div class="ws-option" onclick="selWS('BMB Auto',this)">
+          <div class="ws-name">BMB Auto</div>
+          <div class="ws-detail">📍 Vincent, EL · ★ 4.7</div>
+          <span class="ws-badge open-b">Open Now</span>
+        </div>
+      </div>
+      <span class="error-msg" id="wsErr" style="display:none;margin-top:.5rem;">Please select a workshop.</span>
+    </div>
+
+    <!-- SECTION 4: DATE & TIME -->
+    <div class="form-section">
+      <div class="form-section-title">📅 Date &amp; Time <span style="color:var(--danger)">*</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preferred Date <span class="req">*</span></label>
+          <input type="date" id="date" onchange="updateSlots()"/>
+          <span class="error-msg" id="dateErr">Please select a date.</span>
+        </div>
+      </div>
+      <label style="display:block;margin-top:1.1rem;margin-bottom:.45rem;font-size:.83rem;font-weight:700;color:var(--muted);">
+        Available Time Slots <span class="req">*</span>
+      </label>
+      <div class="time-slots" id="slots">
+        <span style="color:var(--muted);font-size:.85rem;">Select a date first to see available slots.</span>
+      </div>
+      <span class="error-msg" id="slotErr" style="display:none;margin-top:.5rem;">Please select a time slot.</span>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="form-section" style="margin-bottom:0;">
+      <div class="form-section-title">📋 Booking Summary</div>
+      <div class="summary-box">
+        <div class="summary-row"><span class="lbl">Name</span><span class="val" id="sum-name">–</span></div>
+        <div class="summary-row"><span class="lbl">Vehicle</span><span class="val" id="sum-car">–</span></div>
+        <div class="summary-row"><span class="lbl">Service</span><span class="val" id="sum-service">–</span></div>
+        <div class="summary-row"><span class="lbl">Workshop</span><span class="val" id="sum-ws">–</span></div>
+        <div class="summary-row"><span class="lbl">Date &amp; Time</span><span class="val" id="sum-dt">–</span></div>
+        <div class="summary-row"><span class="lbl">Booking Ref</span><span class="val" id="sum-ref" style="color:var(--primary);">Will be generated on confirm</span></div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()">✅ Confirm Booking</button>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <a href="dashboard.html" class="btn-back" style="display:inline-block;">← Back to Dashboard</a>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h2>Booking Confirmed!</h2>
+    <div class="modal-ref" id="modal-ref">REF: MCH-2026-001</div>
+    <p id="modal-msg">Your appointment has been booked successfully.</p>
+    <div class="modal-btns">
+      <button class="modal-btn btn-green" onclick="goToDashboard()">📊 View My Dashboard</button>
+      <a href="booking.html" class="modal-btn btn-outline">+ New Booking</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 <span>MechBook EL</span> · East London, Eastern Cape · HCI26W0 Project</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   MECHBOOK EL — BOOKING PAGE
+   Saves to:
+   • mb_bookings          → owner's dashboard list
+   • mb_notifications     → owner's notifications
+   • mb_ws_req_{wsKey}    → workshop/mechanic incoming requests
+   • mb_ws_notif_{wsKey}  → workshop/mechanic notifications
+   ═══════════════════════════════════════════════ */
+
+let selWorkshop = '';
+let selSlot     = '';
+
+/* ── workshopKey: strip spaces/special chars for localStorage key ── */
+function wsKey(name){ return name.replace(/[^a-z0-9]/gi,'').toLowerCase(); }
+
+/* ── PRE-FILL FROM LOGGED-IN USER ── */
+(function prefill(){
+  const fname = localStorage.getItem('mb_fname') || '';
+  const lname = localStorage.getItem('mb_lname') || '';
+  const email = localStorage.getItem('mb_email') || '';
+  const phone = localStorage.getItem('mb_phone') || '';
+  if(fname){ document.getElementById('fname').value = fname; }
+  if(lname){ document.getElementById('lname').value = lname; }
+  if(email){ document.getElementById('email').value = email; }
+  if(phone){ document.getElementById('phone').value = phone; }
+  if(fname || email){ document.getElementById('prefillBadge').style.display = 'inline-flex'; }
+  updateSummary();
+})();
+
+/* ── MIN DATE ── */
+document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+/* ── PRE-SELECT WORKSHOP FROM URL ── */
+const urlParams = new URLSearchParams(location.search);
+const preShop   = urlParams.get('shop');
+if(preShop){
+  document.querySelectorAll('.ws-option').forEach(el => {
+    if(el.querySelector('.ws-name').textContent.trim() === preShop){
+      el.classList.add('selected');
+      selWorkshop = preShop;
+    }
+  });
+}
+
+/* ── WORKSHOP SELECT ── */
+function selWS(name, el){
+  document.querySelectorAll('.ws-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  selWorkshop = name;
+  document.getElementById('wsErr').style.display = 'none';
+  updateSummary();
+  updateSteps();
+}
+
+/* ── TIME SLOTS ── */
+function updateSlots(){
+  const d = document.getElementById('date').value;
+  if(!d) return;
+  const allSlots = ['08:00','08:30','09:00','09:30','10:00','10:30',
+                    '11:00','11:30','12:00','13:00','13:30','14:00',
+                    '14:30','15:00','15:30','16:00'];
+  const takenIdx = [2, 5, 8, 11];
+  selSlot = '';
+  const container = document.getElementById('slots');
+  container.innerHTML = '';
+  allSlots.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'time-slot' + (takenIdx.includes(i) ? ' taken' : '');
+    div.textContent = t + (takenIdx.includes(i) ? ' ✕' : '');
+    if(!takenIdx.includes(i)){
+      div.addEventListener('click', () => selTime(t, div));
+    }
+    container.appendChild(div);
+  });
+  updateSummary();
+  updateSteps();
+}
+
+function selTime(t, el){
+  document.querySelectorAll('.time-slot').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selSlot = t;
+  document.getElementById('slotErr').style.display = 'none';
+  updateSummary();
+  updateSteps();
+}
+
+/* ── LIVE SUMMARY ── */
+function updateSummary(){
+  const fn  = document.getElementById('fname').value.trim();
+  const ln  = document.getElementById('lname').value.trim();
+  const mk  = document.getElementById('make').value;
+  const md  = document.getElementById('model').value.trim();
+  const yr  = document.getElementById('year').value.trim();
+  const svc = document.getElementById('service').value;
+  const dt  = document.getElementById('date').value;
+  document.getElementById('sum-name').textContent    = (fn||ln) ? (fn+' '+ln).trim() : '–';
+  document.getElementById('sum-car').textContent     = (mk||md) ? [mk,md,yr].filter(Boolean).join(' ') : '–';
+  document.getElementById('sum-service').textContent = svc  || '–';
+  document.getElementById('sum-ws').textContent      = selWorkshop || '–';
+  document.getElementById('sum-dt').textContent      = (dt && selSlot) ? dt + ' at ' + selSlot : dt ? dt : '–';
+}
+
+['fname','lname','make','model','year','service'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('change', updateSummary);
+  el.addEventListener('input',  updateSummary);
+});
+
+/* ── STEP PROGRESS ── */
+function updateSteps(){
+  const fn   = document.getElementById('fname').value.trim();
+  const mk   = document.getElementById('make').value;
+  const ws   = selWorkshop;
+  const dt   = document.getElementById('date').value;
+  const slot = selSlot;
+  const s = (n, done) => {
+    const circle = document.getElementById('s'+n);
+    if(done){ circle.className='step-circle done'; circle.textContent='✓'; }
+    else     { circle.className='step-circle active'; circle.textContent=n; }
+  };
+  const l = (n, done) => {
+    document.getElementById('l'+n).className = 'step-line' + (done ? ' done' : '');
+  };
+  if(fn)  { s(1,true); l(1,true);  s(2,mk?true:false); }
+  if(mk)  { s(2,true); l(2,true);  s(3,ws?true:false); }
+  if(ws)  { s(3,true); l(3,true);  s(4,(dt&&slot)?true:false); }
+}
+
+/* ── VALIDATE ── */
+function validate(){
+  let ok = true;
+  const checks = [
+    { id:'fname',   err:'fnameErr',   fn: v => v.trim().length > 0 },
+    { id:'lname',   err:'lnameErr',   fn: v => v.trim().length > 0 },
+    { id:'phone',   err:'phoneErr',   fn: v => /^(\+27|0)[6-8][0-9]{8}$/.test(v.replace(/\s/g,'')) },
+    { id:'email',   err:'emailErr',   fn: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id:'make',    err:'makeErr',    fn: v => v !== '' },
+    { id:'model',   err:'modelErr',   fn: v => v.trim().length > 0 },
+    { id:'service', err:'serviceErr', fn: v => v !== '' },
+    { id:'date',    err:'dateErr',    fn: v => v !== '' },
+  ];
+  checks.forEach(c => {
+    const el  = document.getElementById(c.id);
+    const err = document.getElementById(c.err);
+    if(!c.fn(el.value)){ el.classList.add('error'); err.classList.add('show'); ok = false; }
+    else                { el.classList.remove('error'); err.classList.remove('show'); }
+  });
+  if(!selWorkshop){ document.getElementById('wsErr').style.display='block'; ok=false; }
+  if(!selSlot)    { document.getElementById('slotErr').style.display='block'; ok=false; }
+  return ok;
+}
+
+/* ── GENERATE REF ── */
+function genRef(){
+  return 'MCH-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*9000)+1000);
+}
+
+/* ── SUBMIT ── */
+function submitForm(){
+  if(!validate()) return;
+
+  const fn   = document.getElementById('fname').value.trim();
+  const ln   = document.getElementById('lname').value.trim();
+  const mk   = document.getElementById('make').value;
+  const md   = document.getElementById('model').value.trim();
+  const yr   = document.getElementById('year').value.trim();
+  const rego = document.getElementById('rego').value.trim();
+  const svc  = document.getElementById('service').value;
+  const desc = document.getElementById('desc').value.trim();
+  const dt   = document.getElementById('date').value;
+  const ref  = genRef();
+  const key  = wsKey(selWorkshop);
+
+  /* ─── BOOKING OBJECT ─── */
+  const booking = {
+    ref,
+    ownerName: fn + ' ' + ln,
+    ownerEmail: document.getElementById('email').value.trim(),
+    ownerPhone: document.getElementById('phone').value.trim(),
+    name:     fn + ' ' + ln,
+    vehicle:  [mk, md, yr].filter(Boolean).join(' ') + (rego ? ' · ' + rego : ''),
+    service:  svc,
+    desc,
+    workshop: selWorkshop,
+    wsKey:    key,
+    date:     dt,
+    time:     selSlot,
+    status:   'Pending',          /* starts as Pending — mechanic accepts/declines */
+    bookedAt: new Date().toISOString()
+  };
+
+  /* ─── 1. OWNER: mb_bookings ─── */
+  const ownerBookings = JSON.parse(localStorage.getItem('mb_bookings') || '[]');
+  ownerBookings.push(booking);
+  localStorage.setItem('mb_bookings', JSON.stringify(ownerBookings));
+
+  /* ─── 2. OWNER: mb_notifications ─── */
+  const ownerNotif = {
+    icon:  '📅',
+    title: 'Booking Submitted',
+    msg:   `Your request for ${svc} at ${selWorkshop} on ${dt} at ${selSlot} is pending mechanic confirmation. Ref: ${ref}`,
+    time:  new Date().toLocaleString('en-GB'),
+    date:  dt,
+    ref
+  };
+  const ownerNotifs = JSON.parse(localStorage.getItem('mb_notifications') || '[]');
+  ownerNotifs.push(ownerNotif);
+  localStorage.setItem('mb_notifications', JSON.stringify(ownerNotifs));
+
+  /* ─── 3. WORKSHOP: mb_ws_req_{key} ─── */
+  /* This is the "incoming requests" queue the mechanic sees on their dashboard */
+  const wsRequests = JSON.parse(localStorage.getItem('mb_ws_req_' + key) || '[]');
+  wsRequests.push(booking);
+  localStorage.setItem('mb_ws_req_' + key, JSON.stringify(wsRequests));
+
+  /* ─── 4. WORKSHOP: mb_ws_notif_{key} ─── */
+  const wsNotif = {
+    icon:  '🆕',
+    title: 'New Booking Request',
+    msg:   `${fn} ${ln} has requested ${svc} for a ${mk} ${md} on ${dt} at ${selSlot}. Ref: ${ref}`,
+    time:  new Date().toLocaleString('en-GB'),
+    date:  dt,
+    ref
+  };
+  const wsNotifs = JSON.parse(localStorage.getItem('mb_ws_notif_' + key) || '[]');
+  wsNotifs.push(wsNotif);
+  localStorage.setItem('mb_ws_notif_' + key, JSON.stringify(wsNotifs));
+
+  /* ─── SHOW MODAL ─── */
+  document.getElementById('modal-ref').textContent = 'REF: ' + ref;
+  document.getElementById('modal-msg').textContent =
+    `Hi ${fn}! Your request at ${selWorkshop} on ${dt} at ${selSlot} has been sent. ` +
+    `Awaiting workshop confirmation — check your dashboard for updates.`;
+  document.getElementById('modal').classList.add('show');
+
+  [1,2,3,4].forEach(n => {
+    const c = document.getElementById('s'+n);
+    c.className = 'step-circle done'; c.textContent = '✓';
+  });
+  [1,2,3].forEach(n => document.getElementById('l'+n).className = 'step-line done');
+}
+
+function goToDashboard(){ window.location.href = 'dashboard.html'; }
+</script>
+</body>
+</html>
