@@ -4,7 +4,7 @@
  * File  : server.js
  *
  * Run   : node server.js
- * URL   : http://localhost:3000
+ * URL   :http://localhost:3000/api/login
  *
  * Endpoints:
  *   POST  /api/register
@@ -319,7 +319,7 @@ app.get('/api/users', (req, res) => {
 });
 
 /* ─── start ─── */
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔══════════════════════════════════════╗
 ║   MechBook EL  ·  Backend Server    ║
