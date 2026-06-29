@@ -1,3 +1,19 @@
 {
-  "users": []
+  "users": [
+    {
+      "id": "1782666814621",
+      "fname": "Matodzi",
+      "lname": "Mutswaletswale",
+      "fullname": "Matodzi Mutswaletswale",
+      "email": "mutswaletswalematodzi@gmail.com",
+      "phone": "0608418390",
+      "role": "owner",
+      "wsname": null,
+      "wskey": null,
+      "password": "$2b$12$bhJCHnAEl8Vmel4gKGvFNOevdXsXCECup51kUebYWt4zw5OvJdXDa",
+      "createdAt": "2026-06-28T17:13:34.621Z"
+    }
+  ],
+  "bookings": [],
+  "notifications": []
 }
