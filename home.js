@@ -104,54 +104,148 @@ function validateField(id, errId, fn) {
 }
 
 /* ── DO HOME LOGIN ── */
-function doHomeLogin() {
+async function doHomeLogin() {
+
   let ok = true;
-  ok = validateField('hl-email','hl-email-err', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
-  ok = validateField('hl-pw',   'hl-pw-err',    v => v.length >= 6)                          && ok;
-  if (!ok) return;
 
-  localStorage.setItem('mb_role', homeLoginType);
-  const savedName = localStorage.getItem('mb_fullname') || '';
-  const type      = homeLoginType === 'mechanic' ? 'Mechanic' : 'Car Owner';
-  const greeting  = savedName ? `, ${savedName}` : '';
-  const icon      = homeLoginType === 'mechanic' ? '🔧' : '🚗';
+  ok = validateField('hl-email','hl-email-err',
+      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
 
-  closePanelOverlay('loginOverlay');
-  showHomeSuccess(icon, 'Welcome Back!', `Welcome back${greeting}! You are logged in as a ${type}. Redirecting you to your dashboard...`);
+  ok = validateField('hl-pw','hl-pw-err',
+      v => v.length >= 6) && ok;
+
+  if(!ok) return;
+
+  try{
+
+      const response = await fetch('http://localhost:3000/api/login',{
+
+          method:'POST',
+
+          headers:{
+              'Content-Type':'application/json'
+          },
+
+          body:JSON.stringify({
+
+              email:document.getElementById('hl-email').value.trim(),
+              password:document.getElementById('hl-pw').value,
+              role:homeLoginType
+
+          })
+
+      });
+
+      const data = await response.json();
+
+      if(!response.ok){
+          alert(data.error);
+          return;
+      }
+
+      localStorage.setItem("mb_token",data.token);
+      localStorage.setItem("mb_fname",data.user.fname);
+      localStorage.setItem("mb_lname",data.user.lname);
+      localStorage.setItem("mb_fullname",data.user.fullname);
+      localStorage.setItem("mb_email",data.user.email);
+      localStorage.setItem("mb_phone",data.user.phone);
+      localStorage.setItem("mb_role",data.user.role);
+      localStorage.setItem("mb_wsname",data.user.wsname || "");
+
+      closePanelOverlay('loginOverlay');
+
+      showHomeSuccess(
+          data.user.role === "mechanic" ? "🔧" : "🚗",
+          "Welcome Back!",
+          `Welcome back, ${data.user.fullname}! Redirecting to your dashboard...`
+      );
+
+      setTimeout(()=>{
+          window.location.href="dashboard.html";
+      },1500);
+
+  }
+  catch(err){
+      alert("Cannot connect to the server.");
+      console.error(err);
+  }
+
 }
 
 /* ── DO HOME REGISTER ── */
-function doHomeRegister() {
-  let ok = true;
-  ok = validateField('hr-fname','hr-fname-err', v => v.trim().length > 1)                             && ok;
-  ok = validateField('hr-lname','hr-lname-err', v => v.trim().length > 1)                             && ok;
-  ok = validateField('hr-email','hr-email-err', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))           && ok;
-  ok = validateField('hr-phone','hr-phone-err', v => /^(\+27|0)[6-8][0-9]{8}$/.test(v.replace(/\s/g,''))) && ok;
-  ok = validateField('hr-pw',   'hr-pw-err',    v => v.length >= 8)                                   && ok;
-  ok = validateField('hr-pw2',  'hr-pw2-err',   v => v === document.getElementById('hr-pw').value && v.length > 0) && ok;
+async function doHomeRegister() {
 
-  if (homeRegType === 'mechanic') {
-    ok = validateField('hr-wsname','hr-wsname-err', v => v.trim().length > 1) && ok;
+  let ok = true;
+
+  ok = validateField('hr-fname','hr-fname-err', v => v.trim().length > 1) && ok;
+  ok = validateField('hr-lname','hr-lname-err', v => v.trim().length > 1) && ok;
+  ok = validateField('hr-email','hr-email-err', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
+  ok = validateField('hr-phone','hr-phone-err', v => /^(\+27|0)[6-8][0-9]{8}$/.test(v.replace(/\s/g,''))) && ok;
+  ok = validateField('hr-pw','hr-pw-err', v => v.length >= 8) && ok;
+  ok = validateField('hr-pw2','hr-pw2-err', v => v === document.getElementById('hr-pw').value) && ok;
+
+  if(homeRegType === 'mechanic'){
+      ok = validateField('hr-wsname','hr-wsname-err', v => v.trim().length > 1) && ok;
   }
 
-  const terms    = document.getElementById('hr-terms');
-  const termsErr = document.getElementById('hr-terms-err');
-  if (!terms.checked) { termsErr.classList.add('show'); ok = false; }
-  else                { termsErr.classList.remove('show'); }
+  if(!ok) return;
 
-  if (!ok) return;
+  try{
 
-  const fn   = document.getElementById('hr-fname').value;
-  const ln   = document.getElementById('hr-lname').value;
-  const type = homeRegType === 'mechanic' ? 'Workshop Owner' : 'Car Owner';
+      const response = await fetch('http://localhost:3000/api/register',{
 
-  localStorage.setItem('mb_fname',    fn);
-  localStorage.setItem('mb_lname',    ln);
-  localStorage.setItem('mb_fullname', fn + ' ' + ln);
-  localStorage.setItem('mb_role',     homeRegType);
-  localStorage.setItem('mb_email',    document.getElementById('hr-email').value);
-  localStorage.setItem('mb_phone',    document.getElementById('hr-phone').value);
+          method:'POST',
 
-  closePanelOverlay('registerOverlay');
-  showHomeSuccess('🎉','Account Created!', `Welcome to MechBook EL, ${fn} ${ln}! Your ${type} account is ready. Let's get started!`);
+          headers:{
+              'Content-Type':'application/json'
+          },
+
+          body:JSON.stringify({
+
+              fname:document.getElementById('hr-fname').value.trim(),
+              lname:document.getElementById('hr-lname').value.trim(),
+              email:document.getElementById('hr-email').value.trim(),
+              phone:document.getElementById('hr-phone').value.trim(),
+              password:document.getElementById('hr-pw').value,
+              role:homeRegType,
+              wsname:homeRegType==='mechanic'
+                     ? document.getElementById('hr-wsname').value.trim()
+                     : null
+
+          })
+
+      });
+
+      const data = await response.json();
+
+      if(!response.ok){
+          alert(data.error);
+          return;
+      }
+
+      localStorage.setItem("mb_token",data.token);
+      localStorage.setItem("mb_fname",data.user.fname);
+      localStorage.setItem("mb_lname",data.user.lname);
+      localStorage.setItem("mb_fullname",data.user.fullname);
+      localStorage.setItem("mb_email",data.user.email);
+      localStorage.setItem("mb_phone",data.user.phone);
+      localStorage.setItem("mb_role",data.user.role);
+      localStorage.setItem("mb_wsname",data.user.wsname || "");
+
+      showHomeSuccess(
+          "🎉",
+          "Account Created!",
+          "Registration successful."
+      );
+
+      setTimeout(()=>{
+          window.location.href="dashboard.html";
+      },1500);
+
+  }
+  catch(err){
+      alert("Cannot connect to the server.");
+      console.error(err);
+  }
+
 }

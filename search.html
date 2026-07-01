@@ -6,21 +6,33 @@
 <title>MechBook EL – Find a Workshop</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--red:#D72638;--dark:#f1f2f3;--card:#4f6078;--border:#21262D;--accent:#F59E0B;--text:#F0F6FC;--muted:#8B949E;--green:#3FB950;}
+:root{ --primary:      #0d62f4;--dark:#ffffff; --card:#FFFFFF;--border:#b0bfd6;--accent:#F59E0B;--text:#000000; --muted:#475569;--green:#3FB950;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--text);}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:3px;}
 
-nav{position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(13,17,23,.97);border-bottom:2px solid var(--border);backdrop-filter:blur(12px);}
-.logo{font-family:'Bebas Neue';font-size:1.9rem;letter-spacing:3px;color:var(--text);text-decoration:none;}
-.logo span{color:var(--red);}
+
+nav{position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem; background: rgba(255,255,255,.93);border-bottom:2px solid var(--border);backdrop-filter:blur(12px);}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--text);
+  text-decoration: none;
+}
+.logo span { color: var(--primary); }
+.logo span a { text-decoration:none; color:inherit; }
+.logo span a:hover { text-decoration:underline; }
+.logo span { color: var(--primary); }
+.logo span a { text-decoration:none; color:inherit; }
+.logo span a:hover { text-decoration:underline; }
 nav ul{list-style:none;display:flex;gap:2rem;}
 nav ul a{color:var(--muted);text-decoration:none;font-weight:700;font-size:.9rem;transition:.2s;}
 nav ul a:hover,nav ul a.active{color:var(--text);}
 .btn-red{background:var(--red);border:none;color:#fff;padding:.45rem 1.3rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;}
-.btn-red:hover{background:#FF4757;}
+.btn-red:hover{background:#0EA5E9;}
 
-.hero{background:linear-gradient(135deg,#130309 0%,#0D1117 100%);padding:3.5rem 2rem 2.5rem;text-align:center;border-bottom:1px solid var(--border);}
+.hero{background:linear-gradient(135deg,#0EA5E9 0%,#015ce3 100%);padding:3.5rem 2rem 2.5rem;text-align:center;border-bottom:1px solid var(--border);}
 .hero h1{font-family:'Bebas Neue';font-size:clamp(2.5rem,5vw,4rem);letter-spacing:3px;}
 .hero h1 span{color:var(--red);}
 .hero p{color:var(--muted);margin:.5rem 0 2rem;}
@@ -29,8 +41,8 @@ nav ul a:hover,nav ul a.active{color:var(--text);}
 .search-bar{display:flex;background:var(--card);border-radius:10px;overflow:hidden;border:2px solid var(--border);transition:.2s;}
 .search-bar:focus-within{border-color:var(--red);}
 .search-bar input{flex:1;padding:.9rem 1.2rem;background:transparent;border:none;color:var(--text);font-family:'Nunito';font-size:1rem;outline:none;}
-.search-bar button{background:var(--red);border:none;padding:0 1.5rem;color:#fff;font-weight:800;font-family:'Nunito';cursor:pointer;font-size:1rem;transition:.2s;}
-.search-bar button:hover{background:#FF4757;}
+.search-bar button{background:var(--red);border:none;padding:0 1.5rem;color:#0a38d1;font-weight:800;font-family:'Nunito';cursor:pointer;font-size:1rem;transition:.2s;}
+.search-bar button:hover{background:#eae9f0;}
 
 .filters{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;}
 .filter-btn{background:var(--card);border:2px solid var(--border);color:var(--muted);padding:.4rem 1rem;border-radius:20px;font-family:'Nunito';font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s;}
@@ -59,12 +71,12 @@ nav ul a:hover,nav ul a.active{color:var(--text);}
 .stars{color:var(--accent);font-size:.88rem;}
 .stars span{color:var(--muted);font-size:.78rem;margin-left:.25rem;}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.85rem 0;}
-.tag{background:#0D1117;border:1px solid var(--border);color:var(--muted);font-size:.73rem;padding:.2rem .6rem;border-radius:10px;}
+.tag{background:#ffffff;border:1px solid var(--border);color:var(--muted);font-size:.73rem;padding:.2rem .6rem;border-radius:10px;}
 .card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:.9rem;border-top:1px solid var(--border);}
 .wait{font-size:.83rem;color:var(--muted);}
 .wait b{color:var(--green);}
-.book-btn{background:var(--red);color:#fff;border:none;padding:.55rem 1.3rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
-.book-btn:hover{background:#FF4757;transform:scale(1.03);}
+.book-btn{background:var(--primary);color:var(--muted);border:none;padding:.55rem 1.3rem;border-radius:8px;font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
+.book-btn:hover{background:#979192;transform:scale(1.03);}
 .phone{color:var(--muted);font-size:.78rem;margin-top:.5rem;}
 
 .empty{grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted);}

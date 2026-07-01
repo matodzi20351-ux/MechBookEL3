@@ -365,7 +365,7 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="terms-row">
           <input type="checkbox" id="r-terms"/>
           <label for="r-terms" style="text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted);font-weight:400;">
-            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.
             I understand my data is protected under the POPI Act.
           </label>
         </div>
@@ -562,7 +562,7 @@ async function doLogin() {
   setLoading('loginBtn', true);
 
   try {
-    const res  = await fetch(API + '/login', {
+    const res  = await fetch("http://localhost:3000/api/login", {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -640,7 +640,7 @@ async function doRegister() {
   setLoading('registerBtn', true);
 
   try {
-    const res  = await fetch(API + '/register', {
+    const res  = await fetch("http://localhost:3000/api/register", {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -699,10 +699,9 @@ function sendReset() {
   showSuccess('📧', 'Email Sent!', `A reset link has been sent to ${email}. Check your inbox.`);
 }
 
-/* ── URL tab param ── */
-if (new URLSearchParams(location.search).get('tab') === 'register') {
-  switchTab('register', document.getElementById('tab-register'));
-}
+
+
+
 </script>
 </body>
 </html>

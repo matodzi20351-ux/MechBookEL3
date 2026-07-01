@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Privacy Policy</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p>Your privacy is important to us. This policy explains how we handle your information:</p>
+  <ul>
+    <li>We collect minimal personal data necessary to provide services.</li>
+    <li>Your data will not be sold or shared with third parties without consent.</li>
+    <li>Cookies may be used to improve user experience.</li>
+    <li>You can request deletion of your data at any time.</li>
+  </ul>
+<button class="btn-red" onclick="showPanel('panel-register')">⬅ Back</button>
+
+<script>
+function showPanel(id) {
+  // Hide all panels
+  document.querySelectorAll('.form-panel').forEach(p => p.style.display = 'none');
+  // Show the target panel
+  document.getElementById(id).style.display = 'block';
+}
+</script>
+  <p><a href="index.html">Back to Home</a></p>
+</body>
+</html>
