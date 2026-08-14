@@ -249,3 +249,9 @@ async function doHomeRegister() {
   }
 
 }
+/* ── OPEN REGISTER PANEL WHEN RETURNING FROM PRIVACY PAGE ── */
+window.addEventListener("load", () => {
+    if (window.location.hash === "#register") {
+        showRegisterPanel();
+    }
+});

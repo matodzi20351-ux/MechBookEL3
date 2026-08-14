@@ -118,7 +118,7 @@ footer span{color:var(--primary);}
 <nav>
   <a href="home.html" class="logo">Mech<span>Book</span> EL</a>
   <div class="nav-right">
-    <a href="dashboard.html" class="btn-back">← Dashboard</a>
+   
     <a href="home.html" class="btn-ghost">Home</a>
   </div>
 </nav>
@@ -387,10 +387,10 @@ async function prefill() {
 
 prefill();
 
-/* ── MIN DATE ── */
+/*MIN DATE */
 document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
-/* ── WORKSHOP SELECT (data-attribute based, avoids quote-escaping issues) ── */
+/* WORKSHOP SELECT (data-attribute based, avoids quote-escaping issues) */
 const wsOptions = document.querySelectorAll('.ws-option');
 
 wsOptions.forEach(opt => {
@@ -406,7 +406,7 @@ function selWS(name, el){
   updateSteps();
 }
 
-/* ── PRE-SELECT WORKSHOP FROM URL ── */
+/* PRE-SELECT WORKSHOP FROM URL */
 const urlParams = new URLSearchParams(location.search);
 const preShop   = urlParams.get('shop');
 if (preShop) {
@@ -417,7 +417,7 @@ if (preShop) {
   });
 }
 
-/* ── TIME SLOTS ── */
+/* tshifhinga Slots*/
 function updateSlots(){
   const d = document.getElementById('date').value;
   if(!d) return;
@@ -451,7 +451,7 @@ function selTime(t, el){
   updateSteps();
 }
 
-/* ── LIVE SUMMARY ── */
+/*Live summary */
 function updateSummary(){
   const fn  = document.getElementById('fname').value.trim();
   const ln  = document.getElementById('lname').value.trim();
@@ -474,9 +474,9 @@ function updateSummary(){
 });
 
 /* ── STEP PROGRESS ──
-   Steps only advance/regress based on actual current form state,
-   and step labels get the "active" class as their step is reached. */
-function setStepState(n, state){ // state: 'done' | 'active' | 'pending'
+   of showing ndi ifhio ire online
+    */
+function setStepState(n, state){ 
   const circle = document.getElementById('s'+n);
   const label  = document.getElementById('sl'+n);
 
@@ -605,7 +605,7 @@ async function submitForm() {
 
         setTimeout(() => {
             window.location.href = 'dashboard.html';
-        }, 10000); // 10 seconds
+        }, 100000); // 10 seconds
 
     } catch (err) {
         console.error("Booking Error:", err);
@@ -620,6 +620,15 @@ async function submitForm() {
 
 function goToDashboard() {
     window.location.href = 'dashboard.html';
+}
+function submitForm(){
+  if(!validate())return;
+  const fn=document.getElementById('fname').value;
+  const ln=document.getElementById('lname').value;
+  const dt=document.getElementById('date').value;
+  document.getElementById('modal-msg').textContent=
+    `Hi ${fn} ${ln}! Your booking at ${selWorkshop} on ${dt} at ${selSlot} has been confirmed. A confirmation will be sent to your email.`;
+  document.getElementById('modal').classList.add('show');
 }
 
 </script>

@@ -1,29 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Privacy Policy</title>
-  <link rel="stylesheet" href="style.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | MechBook EL</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Privacy Policy</h1>
-  <p>Your privacy is important to us. This policy explains how we handle your information:</p>
-  <ul>
-    <li>We collect minimal personal data necessary to provide services.</li>
-    <li>Your data will not be sold or shared with third parties without consent.</li>
-    <li>Cookies may be used to improve user experience.</li>
-    <li>You can request deletion of your data at any time.</li>
-  </ul>
-<button class="btn-red" onclick="showPanel('panel-register')">⬅ Back</button>
 
+<div class="form-panel" style="display:block; max-width:800px; margin:40px auto;">
+    <div class="form-head">
+        <h2>Privacy <span>Policy</span></h2>
+        <p>Your privacy is important to us.</p>
+    </div>
+
+    <p>
+        At <strong>MechBook EL</strong>, we respect your privacy and are committed to protecting your personal information.
+    </p>
+
+    <h3>Information We Collect</h3>
+    <ul>
+        <li>Full name</li>
+        <li>Email address</li>
+        <li>Phone number</li>
+        <li>Workshop details (for workshop owners)</li>
+        <li>Vehicle booking information</li>
+    </ul>
+
+    <h3>How We Use Your Information</h3>
+    <ul>
+        <li>To create your account.</li>
+        <li>To process workshop bookings.</li>
+        <li>To contact you regarding your bookings.</li>
+        <li>To improve our services.</li>
+    </ul>
+
+    <h3>Data Protection</h3>
+    <ul>
+        <li>Your information is stored securely.</li>
+        <li>We never sell your personal information.</li>
+        <li>Only authorised personnel can access your data.</li>
+    </ul>
+
+    <h3>Your Rights</h3>
+    <ul>
+        <li>You may request access to your information.</li>
+        <li>You may request correction of incorrect information.</li>
+        <li>You may request deletion of your account.</li>
+    </ul>
+
+    <h3>POPI Act</h3>
+    <p>
+        MechBook EL complies with the Protection of Personal Information Act (POPIA) of South Africa.
+    </p>
+
+    <br>
+
+    <button class="btn-red" onclick="goBackToRegister()">
+        ⬅ Back to Registration
+    </button>
+</div>
 <script>
-function showPanel(id) {
-  // Hide all panels
-  document.querySelectorAll('.form-panel').forEach(p => p.style.display = 'none');
-  // Show the target panel
-  document.getElementById(id).style.display = 'block';
+function goBackToRegister() {
+    window.location.href = "index.html#register";
 }
 </script>
-  <p><a href="index.html">Back to Home</a></p>
+
 </body>
 </html>

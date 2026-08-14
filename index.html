@@ -377,12 +377,19 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
           <span class="btn-text">Create My Account</span>
           <div class="spinner"></div>
         </button>
+<div class="divider">or sign up with</div>
 
-        <div class="divider">or sign up with</div>
-        <div class="social-row">
-          <button class="social-btn">🌐 Google</button>
-          <button class="social-btn">📘 Facebook</button>
-        </div>
+<div class="social-row">
+    <button class="social-btn"
+            onclick="window.location.href='https://accounts.google.com/'">
+        🌐 Google
+    </button>
+
+    <button class="social-btn"
+            onclick="window.location.href='https://www.facebook.com/'">
+        📘 Facebook
+    </button>
+</div>
 
         <div class="form-foot" style="margin-top:1rem;">
           Already have an account?
@@ -698,10 +705,14 @@ function sendReset() {
   closeForgot();
   showSuccess('📧', 'Email Sent!', `A reset link has been sent to ${email}. Check your inbox.`);
 }
+window.addEventListener("load", () => {
+    if (window.location.hash === "#register") {
+        showPanel("panel-register");
+    }
+});
 
 
-
-
+  
 </script>
 </body>
 </html>
