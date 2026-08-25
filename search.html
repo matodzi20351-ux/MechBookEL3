@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MechBook EL – Find a Workshop</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{ --primary:      #0d62f4;--dark:#ffffff; --card:#FFFFFF;--border:#b0bfd6;--accent:#F59E0B;--text:#000000; --muted:#475569;--green:#3FB950;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -103,7 +104,7 @@ footer span{color:var(--red);}
   <div class="search-wrap">
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search workshop name or service…" oninput="doFilter()"/>
-      <button onclick="doFilter()">🔍 Search</button>
+      <button onclick="doFilter()"><i class="fa-solid fa-search"></i>Search</button>
     </div>
     <div class="filters" id="filterRow">
       <button class="filter-btn active" onclick="setF('all',this)">All</button>

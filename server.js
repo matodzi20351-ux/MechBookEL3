@@ -18,18 +18,30 @@
  *   PATCH /api/notifications/read      (auth)
  *   GET   /api/users                   (dev – no auth)
  */
-
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const cors    = require('cors');
 const fs      = require('fs');
 const path    = require('path');
+const nodemailer = require('nodemailer');
+
+require('dotenv').config();
 
 const app    = express();
 const PORT = process.env.PORT || 3000;
 const DB     = path.join(__dirname, 'db.json');
 const SECRET = 'mechbook_el_jwt_secret_2026';
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+// Temporary OTP storage
+const otpStore = {};
 
 /* ─── middleware ─── */
 app.use(cors());
@@ -48,6 +60,105 @@ function readDB() {
 function writeDB(data) {
   fs.writeFileSync(DB, JSON.stringify(data, null, 2));
 }
+/* ─── send OTP ─── */
+app.post('/api/send-otp', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({
+      error: 'Please enter a valid email address.'
+    });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+
+  // Generate a 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Store OTP for 5 minutes
+  otpStore[cleanEmail] = {
+    otp,
+    expires: Date.now() + 5 * 60 * 1000
+  };
+
+  try {
+    await transporter.sendMail({
+      from: `"MechBook EL" <${process.env.EMAIL_USER}>`,
+      to: cleanEmail,
+      subject: 'MechBook EL - Your Verification Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto;">
+          <h2 style="color: #2563eb;">MechBook EL</h2>
+
+          <p>Your verification code is:</p>
+
+          <div style="
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            padding: 20px;
+            background: #f1f5f9;
+            text-align: center;
+            border-radius: 10px;
+          ">
+            ${otp}
+          </div>
+
+          <p>This code will expire in <strong>5 minutes</strong>.</p>
+
+          <p>If you did not request this code, you can safely ignore this email.</p>
+        </div>
+      `
+    });
+
+    return res.json({
+      message: 'OTP sent successfully.'
+    });
+
+  } catch (error) {
+    console.error('Email error:', error);
+
+    // Remove OTP if email failed
+    delete otpStore[cleanEmail];
+
+    return res.status(500).json({
+      error: 'Unable to send OTP email. Please try again.'
+    });
+  }
+});
+/* ─── verify OTP ─── */
+app.post('/api/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+
+  const cleanEmail = email.toLowerCase().trim();
+  const record = otpStore[cleanEmail];
+
+  if (!record) {
+    return res.status(400).json({
+      error: "No OTP found. Please request a new code."
+    });
+  }
+
+  if (Date.now() > record.expires) {
+    delete otpStore[cleanEmail];
+    return res.status(400).json({
+      error: "OTP has expired. Please request a new code."
+    });
+  }
+
+  if (record.otp !== otp) {
+    return res.status(400).json({
+      error: "Incorrect OTP."
+    });
+  }
+
+  // OTP verified
+  delete otpStore[cleanEmail];
+
+  return res.json({
+    message: "Email verified successfully."
+  });
+});
 
 /* ─── auth middleware ─── */
 function auth(req, res, next) {

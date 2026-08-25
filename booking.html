@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MechBook EL – Book an Appointment</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{
   --primary:#2563EB;
@@ -146,12 +147,12 @@ footer span{color:var(--primary);}
 
   <div class="form-card">
     <div id="prefillBadge" style="display:none;" class="prefill-badge">
-      ✅ Your account details have been pre-filled from your profile.
+      <i class="fa-solid fa-circle-check"></i> Your account details have been pre-filled from your profile.
     </div>
 
     <!-- SECTION 1: YOUR DETAILS -->
     <div class="form-section">
-      <div class="form-section-title">👤 Your Details</div>
+      <div class="form-section-title"> <i class="fa-solid fa-user"></i>Your Details</div>
       <div class="form-row">
         <div class="form-group">
           <label>First Name <span class="req">*</span></label>
@@ -178,7 +179,7 @@ footer span{color:var(--primary);}
 
     <!-- SECTION 2: VEHICLE -->
     <div class="form-section">
-      <div class="form-section-title">🚗 Vehicle Information</div>
+      <div class="form-section-title"><i class="fa-solid fa-car"></i> Vehicle Information</div>
       <div class="form-row">
         <div class="form-group">
           <label>Vehicle Make <span class="req">*</span></label>
@@ -230,7 +231,8 @@ footer span{color:var(--primary);}
 
     <!-- SECTION 3: WORKSHOP -->
     <div class="form-section">
-      <div class="form-section-title">🔧 Select Workshop <span style="color:var(--danger)">*</span></div>
+      <div class="form-section-title">
+         <i class="fa fa-wrench"aria-hidden="true"></i>Select Workshop <span style="color:var(--danger)">*</span></div>
       <div class="ws-select-grid" id="wsGrid">
         <div class="ws-option" data-workshop="CARtime Nahoon">
           <div class="ws-name">CARtime Nahoon</div>
@@ -263,7 +265,7 @@ footer span{color:var(--primary);}
 
     <!-- SECTION 4: DATE & TIME -->
     <div class="form-section">
-      <div class="form-section-title">📅 Date &amp; Time <span style="color:var(--danger)">*</span></div>
+      <div class="form-section-title"><i class="fa-solid fa-calendar"></i> Date &amp; Time <span style="color:var(--danger)">*</span></div>
       <div class="form-row">
         <div class="form-group">
           <label>Preferred Date <span class="req">*</span></label>
@@ -282,7 +284,7 @@ footer span{color:var(--primary);}
 
     <!-- SUMMARY -->
     <div class="form-section" style="margin-bottom:0;">
-      <div class="form-section-title">📋 Booking Summary</div>
+      <div class="form-section-title"><i class="fa-solid fa-pen-to-square"></i> Booking Summary</div>
       <div class="summary-box">
         <div class="summary-row"><span class="lbl">Name</span><span class="val" id="sum-name">–</span></div>
         <div class="summary-row"><span class="lbl">Vehicle</span><span class="val" id="sum-car">–</span></div>
@@ -293,7 +295,7 @@ footer span{color:var(--primary);}
       </div>
     </div>
 <button type="button" class="submit-btn" onclick="submitForm()">
-    ✅ Confirm Booking
+    <i class="fa-solid fa-circle-check"></i> Confirm Booking
 </button>
   </div>
 
@@ -558,7 +560,6 @@ function genRef(){
 
 /* ── SUBMIT ── */
 async function submitForm() {
-
     if (!validate()) return;
 
     const fn   = document.getElementById('fname').value.trim();
@@ -570,65 +571,70 @@ async function submitForm() {
     const svc  = document.getElementById('service').value;
     const desc = document.getElementById('desc').value.trim();
     const dt   = document.getElementById('date').value;
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    const btn = document.querySelector('.submit-btn');
 
     try {
+        // Prevent double booking
+        btn.disabled = true;
+        btn.textContent = '⏳ Sending Booking...';
 
         const result = await api('/bookings', {
             method: 'POST',
             body: JSON.stringify({
                 fname: fn,
                 lname: ln,
-                phone: document.getElementById('phone').value.trim(),
-                email: document.getElementById('email').value.trim(),
+                phone,
+                email,
                 make: mk,
                 model: md,
                 year: yr,
-                rego: rego,
+                rego,
                 service: svc,
-                desc: desc,
+                desc,
                 workshop: selWorkshop,
                 date: dt,
                 time: selSlot
             })
         });
 
+        console.log('BOOKING RESPONSE:', result);
+
+        // Make sure the server returned a booking reference
+        if (!result.booking || !result.booking.ref) {
+            throw new Error('Booking was saved, but no booking reference was returned.');
+        }
+
+        // Show reference
         document.getElementById('modal-ref').textContent =
             'REF: ' + result.booking.ref;
 
+        // Show confirmation message
         document.getElementById('modal-msg').textContent =
-            `Hi ${fn}! Your request at ${selWorkshop} on ${dt} at ${selSlot} has been sent successfully. Awaiting workshop confirmation. Check your dashboard for updates.`;
+            `Hi ${fn}! Your request at ${selWorkshop} on ${dt} at ${selSlot} has been sent successfully. Awaiting workshop confirmation.`;
 
+        // Show modal
         document.getElementById('modal').classList.add('show');
 
-        [1,2,3,4].forEach(n => setStepState(n, 'done'));
-        [1,2,3].forEach(n => setLineState(n, true));
+        // Update steps
+        [1, 2, 3, 4].forEach(n => setStepState(n, 'done'));
+        [1, 2, 3].forEach(n => setLineState(n, true));
 
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 100000); // 10 seconds
+        // Keep button disabled
+        btn.textContent = '✅ Booking Submitted';
+
+        // DO NOT automatically redirect
+        // User can click "View My Dashboard"
 
     } catch (err) {
-        console.error("Booking Error:", err);
-
-        if (err.stack) {
-            console.log(err.stack);
-        }
-
+        console.error('Booking Error:', err);
         alert(err.message);
-    }
-}
 
-function goToDashboard() {
-    window.location.href = 'dashboard.html';
-}
-function submitForm(){
-  if(!validate())return;
-  const fn=document.getElementById('fname').value;
-  const ln=document.getElementById('lname').value;
-  const dt=document.getElementById('date').value;
-  document.getElementById('modal-msg').textContent=
-    `Hi ${fn} ${ln}! Your booking at ${selWorkshop} on ${dt} at ${selSlot} has been confirmed. A confirmation will be sent to your email.`;
-  document.getElementById('modal').classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '✅ Confirm Booking';
+    }
 }
 
 </script>

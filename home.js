@@ -73,10 +73,18 @@ function selRegType(type, btn) {
 
 /* ── PASSWORD TOGGLE ── */
 function togglePw(id, btn) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.type = el.type === 'password' ? 'text' : 'password';
-  btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+  const input = document.getElementById(id);
+  const icon = btn.querySelector("i");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
 }
 
 /* ── SUCCESS OVERLAY ── */
@@ -255,3 +263,53 @@ window.addEventListener("load", () => {
         showRegisterPanel();
     }
 });
+function showForgot()  { document.getElementById('forgotOverlay').classList.add('show'); }
+function closeForgot() { document.getElementById('forgotOverlay').classList.remove('show'); }
+async function sendReset() {
+  const emailInput = document.getElementById('forgot-email');
+  const email = emailInput.value.trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:3000/api/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Unable to send verification code.');
+      return;
+    }
+
+    alert('A verification code has been sent to your email.');
+
+    // For now, close the first popup.
+    closeForgot();
+
+    // We'll replace this with the OTP screen in the next step.
+    showSuccess(
+      '📧',
+      'Check Your Email',
+      'A 6-digit verification code has been sent to your email.'
+    );
+
+  } catch (error) {
+    console.error(error);
+    alert('Cannot reach the server. Make sure node server.js is running.');
+  }
+}
+window.addEventListener("load", () => {
+    if (window.location.hash === "#register") {
+        showPanel("panel-register");
+    }
+});
+

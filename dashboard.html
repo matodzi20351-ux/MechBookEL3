@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MechBook EL – Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{
   --primary:#2563EB;--accent:#0EA5E9;--secondary:#EFF6FF;
@@ -233,40 +234,49 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   <!-- OWNER NAV -->
   <nav class="sidebar-nav" id="owner-nav" style="display:none;">
     <div class="nav-label">Main</div>
-    <button class="nav-item" onclick="showPanel('overview',this)"><span class="nav-icon">🏠</span>Overview</button>
-    <button class="nav-item" onclick="showPanel('bookings',this)"><span class="nav-icon">📅</span>My Bookings</button>
-    <button class="nav-item" onclick="showPanel('tracker',this)"><span class="nav-icon">🔍</span>Track My Car</button>
+    <button class="nav-item" onclick="showPanel('overview',this)"><span class="nav-icon">
+<i class="fa-solid fa-home"></i></span>Overview</button>
+    <button class="nav-item" onclick="showPanel('bookings',this)"><span class="nav-icon">
+<i class="fa-solid fa-calendar"></i></span>My Bookings</button>
+    <button class="nav-item" onclick="showPanel('tracker',this)"><span class="nav-icon">
+<i class="fa-solid fa-search"></i></span>Track My Car</button>
     <div class="nav-label">Account</div>
     <button class="nav-item" onclick="showPanel('notifications',this);loadNotifications();">
-      <span class="nav-icon">🔔</span>Notifications
+      <span class="nav-icon">
+        <i class="fa-solid fa-bell"></i>
+      </span>Notifications
       <span class="badge orange" id="owner-notif-badge" style="display:none;">0</span>
     </button>
-    <button class="nav-item" onclick="showPanel('profile',this)"><span class="nav-icon">👤</span>My Profile</button>
+    <button class="nav-item" onclick="showPanel('profile',this)"><span class="nav-icon">
+      <i class="fa-solid fa-user"></i>
+    </span>My Profile</button>
     <a href="home.html" class="nav-item"><span class="nav-icon">←</span>Back to Home</a>
   </nav>
 
   <!-- MECHANIC NAV -->
   <nav class="sidebar-nav" id="mechanic-nav" style="display:none;">
     <div class="nav-label">Workshop</div>
-    <button class="nav-item" onclick="showPanel('mec-overview',this)"><span class="nav-icon">🏠</span>Overview</button>
+    <button class="nav-item" onclick="showPanel('mec-overview',this)"><span class="nav-icon">
+<i class="fa-solid fa-home"></i></span>Overview</button>
     <button class="nav-item" onclick="showPanel('mec-requests',this);loadWorkshopBookings();">
-      <span class="nav-icon">📋</span>Booking Requests
+      <span class="nav-icon"><i class="fa-solid fa-pen-to-square"></i></span>Booking Requests
       <span class="badge red" id="mec-req-badge" style="display:none;">0</span>
     </button>
     <button class="nav-item" onclick="showPanel('mec-active',this);loadWorkshopBookings();">
-      <span class="nav-icon">🔧</span>Active Jobs
+      <span class="nav-icon"><i class="fa-solid fa-tools"></i></span>Active Jobs
     </button>
     <div class="nav-label">Manage</div>
     <button class="nav-item" onclick="showPanel('notifications',this);loadNotifications();">
-      <span class="nav-icon">🔔</span>Notifications
+      <span class="nav-icon">
+        <i class="fa-solid fa-bell"></i></span>Notifications
       <span class="badge orange" id="mec-notif-badge" style="display:none;">0</span>
     </button>
-    <button class="nav-item" onclick="showPanel('mec-profile',this)"><span class="nav-icon">🏪</span>Workshop Profile</button>
+    <button class="nav-item" onclick="showPanel('mec-profile',this)"><span class="nav-icon"><i class="fa-solid fa-home"></i></span>Workshop Profile</button>
     <a href="home.html" class="nav-item"><span class="nav-icon">←</span>Back to Home</a>
   </nav>
 
   <div class="sidebar-footer">
-    <button class="logout-btn" onclick="openLogoutModal()">🚪 Log Out</button>
+    <button class="logout-btn" onclick="openLogoutModal()"><i class="fa-solid fa-right-from-bracket"></i>Log Out</button>
   </div>
 </aside>
 
@@ -282,7 +292,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
     </div>
     <div class="topbar-right">
       <button class="topbar-btn" onclick="showPanel('notifications',null);loadNotifications();">
-        🔔 <span class="notif-dot" id="topbar-notif-dot" style="display:none;"></span>
+        <i class="fa-solid fa-bell"></i><span class="notif-dot" id="topbar-notif-dot" style="display:none;"></span>
       </button>
       <button class="topbar-btn" onclick="refreshAll()">↻ Refresh</button>
       <a href="home.html" class="topbar-btn">← Home</a>
@@ -292,53 +302,54 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   <!-- ══════ OWNER PANELS ══════ -->
   <div class="panel" id="panel-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-total">–</div><div class="stat-label">Total Bookings</div></div>
-      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-val" id="stat-pending">–</div><div class="stat-label">Pending</div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="stat-confirmed">–</div><div class="stat-label">Confirmed</div></div>
-      <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-val" id="stat-done">–</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar"></i></div><div class="stat-val" id="stat-total">–</div><div class="stat-label">Total Bookings</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-val" id="stat-pending">–</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-val" id="stat-confirmed">–</div><div class="stat-label">Confirmed</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-tools"></i></div><div class="stat-val" id="stat-done">–</div><div class="stat-label">Completed</div></div>
     </div>
     <div class="sec-header"><h2>Quick Actions</h2></div>
     <div class="quick-actions">
-      <a href="booking.html" class="qa-btn"><div class="qa-icon">📅</div><div class="qa-label">Book Workshop</div></a>
-      <a href="search.html"  class="qa-btn"><div class="qa-icon">🔍</div><div class="qa-label">Find Mechanic</div></a>
-      <button class="qa-btn" onclick="showPanel('tracker',null)"><div class="qa-icon">🚗</div><div class="qa-label">Track My Car</div></button>
-      <button class="qa-btn" onclick="showPanel('bookings',null)"><div class="qa-icon">📋</div><div class="qa-label">My Bookings</div></button>
-      <button class="qa-btn" onclick="showPanel('profile',null)"><div class="qa-icon">👤</div><div class="qa-label">My Profile</div></button>
+      <a href="booking.html" class="qa-btn"><div class="qa-icon"><i class="fa-solid fa-pen-to-square"></i></div><div class="qa-label">Book Workshop</div></a>
+      <a href="search.html"  class="qa-btn"><div class="qa-icon"><i class="fa-solid fa-search"></i></div><div class="qa-label">Find Mechanic</div></a>
+      <button class="qa-btn" onclick="showPanel('tracker',null)"><div class="qa-icon"><i class="fa-solid fa-car"></i></div><div class="qa-label">Track My Car</div></button>
+      <button class="qa-btn" onclick="showPanel('bookings',null)"><div class="qa-icon"><i class="fa-solid fa-calendar"></i></div><div class="qa-label">My Bookings</div></button>
+      <button class="qa-btn" onclick="showPanel('profile',null)"><div class="qa-icon"><i class="fa-solid fa-user"></i></div><div class="qa-label">My Profile</div></button>
     </div>
     <div class="sec-header"><h2>Recent Activity</h2><button onclick="showPanel('bookings',null)">View All →</button></div>
     <div id="overview-bookings-list"></div>
   </div>
 
   <div class="panel" id="panel-bookings">
-    <div class="sec-header"><h2>📅 My Bookings</h2><button onclick="loadOwnerBookings()">↻ Refresh</button></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-calendar"></i> My Bookings</h2><button onclick="loadOwnerBookings()">↻ Refresh</button></div>
     <div id="bookings-list"></div>
   </div>
 
   <div class="panel" id="panel-tracker">
-    <div class="sec-header"><h2>🔍 Track My Car</h2></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-search"></i> Track My Car</h2></div>
     <div id="tracker-content"></div>
   </div>
 
   <div class="panel" id="panel-notifications">
-    <div class="sec-header"><h2>🔔 Notifications</h2><button onclick="markAllRead()">Mark all read</button></div>
+    <div class="sec-header"><h2> 
+     <i class="fa-solid fa-bell"></i> Notifications</h2><button onclick="markAllRead()">Mark all read</button></div>
     <div class="notif-list" id="notif-list"></div>
   </div>
 
   <div class="panel" id="panel-profile">
-    <div class="sec-header"><h2>👤 My Profile</h2></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-user"></i> My Profile</h2></div>
     <div id="profile-content"></div>
   </div>
 
   <!-- ══════ MECHANIC PANELS ══════ -->
   <div class="panel" id="panel-mec-overview">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val" id="mec-stat-pending">–</div><div class="stat-label">New Requests</div></div>
-      <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-val" id="mec-stat-active">–</div><div class="stat-label">Active Jobs</div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="mec-stat-done">–</div><div class="stat-label">Completed</div></div>
-      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="mec-stat-total">–</div><div class="stat-label">Total Requests</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar-plus"></i></div><div class="stat-val" id="mec-stat-pending">–</div><div class="stat-label">New Requests</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-tools"></i></div><div class="stat-val" id="mec-stat-active">–</div><div class="stat-label">Active Jobs</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-val" id="mec-stat-done">–</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div><div class="stat-val" id="mec-stat-total">–</div><div class="stat-label">Total Requests</div></div>
     </div>
     <div class="chart-section">
-      <div class="chart-title">📊 Weekly Bookings (last 7 days)</div>
+      <div class="chart-title"><i class="fa-solid fa-chart-column"></i> Weekly Bookings (last 7 days)</div>
       <div class="bar-chart" id="barChart"></div>
       <div style="display:flex;justify-content:space-around;margin-top:.5rem;">
         <span style="font-size:.66rem;color:var(--muted);">Mon</span><span style="font-size:.66rem;color:var(--muted);">Tue</span><span style="font-size:.66rem;color:var(--muted);">Wed</span><span style="font-size:.66rem;color:var(--muted);">Thu</span><span style="font-size:.66rem;color:var(--muted);">Fri</span><span style="font-size:.66rem;color:var(--muted);">Sat</span><span style="font-size:.66rem;color:var(--muted);">Sun</span>
@@ -349,17 +360,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   </div>
 
   <div class="panel" id="panel-mec-requests">
-    <div class="sec-header"><h2>📋 Booking Requests</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-pen-to-square"></i> Booking Requests</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
     <div id="mec-requests-list"></div>
   </div>
 
   <div class="panel" id="panel-mec-active">
-    <div class="sec-header"><h2>🔧 Active Jobs</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-tools"></i> Active Jobs</h2><button onclick="loadWorkshopBookings()">↻ Refresh</button></div>
     <div id="mec-active-list"></div>
   </div>
 
   <div class="panel" id="panel-mec-profile">
-    <div class="sec-header"><h2>🏪 Workshop Profile</h2></div>
+    <div class="sec-header"><h2><i class="fa-solid fa-warehouse"></i> Workshop Profile</h2></div>
     <div id="mec-profile-content"></div>
   </div>
 </div>
@@ -383,7 +394,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
     <p>Optionally leave a note for the customer explaining why the booking was declined.</p>
     <textarea class="modal-textarea" id="declineFeedback" placeholder="e.g. Fully booked on that date. Please try another slot."></textarea>
     <div class="modal-btns">
-      <button class="btn-danger" id="declineConfirmBtn">❌ Decline &amp; Notify</button>
+      <button class="btn-danger" id="declineConfirmBtn"><i class="fa-solid fa-xmark"></i> Decline &amp; Notify</button>
       <button class="btn-cancel" onclick="closeModal('declineModal')">Cancel</button>
     </div>
   </div>
@@ -396,7 +407,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
     <p>Leave a note for the customer about what was done, parts replaced, and any recommendations.</p>
     <textarea class="modal-textarea" id="completeFeedback" placeholder="e.g. Changed oil and filter. Brake pads at 30% — recommend replacement in 3 months."></textarea>
     <div class="modal-btns">
-      <button class="btn-confirm" id="completeConfirmBtn">✅ Mark as Completed</button>
+      <button class="btn-confirm" id="completeConfirmBtn"><i class="fa-solid fa-circle-check"></i> Mark as Completed</button>
       <button class="btn-cancel"  onclick="closeModal('completeModal')">Cancel</button>
     </div>
   </div>
@@ -506,7 +517,7 @@ function renderOwnerBookings(bookings) {
   const all    = [...bookings].reverse();
 
   if (!bookings.length) {
-    const empty = emptyState('📅','No Bookings Yet',`Hi ${FNAME}! You haven't made any bookings yet.`,'booking.html','Book a Workshop');
+    const empty = emptyState('<i class="fa-solid fa-chart-column"></i>','No Bookings Yet',`Hi ${FNAME}! You haven't made any bookings yet.`,'booking.html','Book a Workshop');
     document.getElementById('overview-bookings-list').innerHTML = empty;
     document.getElementById('bookings-list').innerHTML = empty;
     return;
@@ -519,11 +530,11 @@ function ownerBookingCard(b) {
   const cls = {Pending:'status-pending',Confirmed:'status-confirmed','In Progress':'status-progress',Completed:'status-done',Declined:'status-declined'}[b.status] || 'status-pending';
   const fb  = b.feedback ? `<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem;font-style:italic;">💬 Mechanic note: ${esc(b.feedback)}</div>` : '';
   return `<div class="booking-card">
-    <div class="booking-ws-icon">🔧</div>
+    <div class="booking-ws-icon"><i class="fa-solid fa-tools"></i></div>
     <div class="booking-info">
       <div class="booking-title">${esc(b.workshop)}</div>
       <div class="booking-sub">${esc(b.service)}${b.vehicle?' – '+esc(b.vehicle):''}</div>
-      <div class="booking-meta"><span>📅 ${esc(b.date)}</span><span>⏰ ${esc(b.time||'—')}</span><span style="color:var(--primary);">Ref: ${esc(b.ref)}</span></div>
+      <div class="booking-meta"><span><i class="fa-solid fa-calendar"></i> ${esc(b.date)}</span><span><i class="fa-solid fa-clock"></i> ${esc(b.time||'—')}</span><span style="color:var(--primary);">Ref: ${esc(b.ref)}</span></div>
       ${fb}
     </div>
     <div class="booking-right"><span class="status-badge ${cls}">${esc(b.status)}</span></div>

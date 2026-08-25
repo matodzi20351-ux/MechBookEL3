@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MechBook EL – Login & Register</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{
   --primary:#2563EB;
@@ -205,8 +206,8 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
     </div>
 
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('login',this)" id="tab-login">🔑 Login</button>
-      <button class="tab-btn"        onclick="switchTab('register',this)" id="tab-register">✨ Create Account</button>
+      <button class="tab-btn active" onclick="switchTab('login',this)" id="tab-login"><i class="fa-solid fa-key"></i> Login</button>
+      <button class="tab-btn"        onclick="switchTab('register',this)" id="tab-register"><i class="fa-solid fa-wand-magic-sparkles"></i>  Create Account</button>
     </div>
 
     <div class="form-card">
@@ -223,14 +224,14 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="server-ok"  id="l-server-ok"></div>
 
         <div class="user-type">
-          <button class="type-btn sel" onclick="selType('login','owner',this)">🚗 Car Owner</button>
-          <button class="type-btn"     onclick="selType('login','mechanic',this)">🔧 Mechanic</button>
+          <button class="type-btn sel" onclick="selType('login','owner',this)"><i class="fa-solid fa-car"></i>  Car Owner</button>
+          <button class="type-btn"     onclick="selType('login','mechanic',this)"><i class="fa-solid fa-tools"></i>  Mechanic</button>
         </div>
 
         <div class="form-group" style="margin-top:1.2rem;">
           <label>Email Address <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">✉️</span>
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i> </span>
             <input type="email" id="l-email" placeholder="you@email.com"
               oninput="liveVal('l-email','l-email-err',v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))"/>
           </div>
@@ -240,11 +241,11 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group">
           <label>Password <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">🔒</span>
+            <span class="input-icon"><i class="fa-solid fa-lock"></i> </span>
             <input type="password" id="l-pw" placeholder="Enter your password"
               oninput="liveVal('l-pw','l-pw-err',v=>v.length>=6)"
               onkeydown="if(event.key==='Enter')doLogin()"/>
-            <button class="pw-toggle" type="button" onclick="togglePw('l-pw',this)">👁️</button>
+            <button class="pw-toggle" type="button" onclick="togglePw('l-pw',this)"><i class="fa-solid fa-eye"></i> </button>
           </div>
           <div class="err-msg" id="l-pw-err">Password must be at least 6 characters.</div>
         </div>
@@ -276,16 +277,16 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="server-ok"  id="r-server-ok"></div>
 
         <div class="user-type">
-          <button class="type-btn sel" id="r-type-owner"    onclick="selType('register','owner',this)">🚗 Car Owner</button>
-          <button class="type-btn"     id="r-type-mechanic" onclick="selType('register','mechanic',this)">🔧 Workshop Owner</button>
+          <button class="type-btn sel" id="r-type-owner"    onclick="selType('register','owner',this)"><i class="fa-solid fa-car"></i>  Car Owner</button>
+          <button class="type-btn"     id="r-type-mechanic" onclick="selType('register','mechanic',this)"><i class="fa-solid fa-tools"></i>  Workshop Owner</button>
         </div>
 
         <div class="form-row-2" style="margin-top:1.2rem;">
           <div class="form-group">
             <label>First Name <span class="req">*</span></label>
             <div class="input-wrap">
-              <span class="input-icon">👤</span>
-              <input type="text" id="r-fname" placeholder="e.g. Sipho"
+              <span class="input-icon"><i class="fa-solid fa-user"></i> </span>
+              <input type="text" id="r-fname" placeholder="e.g. venus"
                 oninput="liveVal('r-fname','r-fname-err',v=>v.trim().length>1)"/>
             </div>
             <div class="err-msg" id="r-fname-err">Enter your first name.</div>
@@ -293,7 +294,7 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
           <div class="form-group">
             <label>Last Name <span class="req">*</span></label>
             <div class="input-wrap">
-              <span class="input-icon">👤</span>
+              <span class="input-icon"><i class="fa-solid fa-user"></i> </span>
               <input type="text" id="r-lname" placeholder="e.g. Dlamini"
                 oninput="liveVal('r-lname','r-lname-err',v=>v.trim().length>1)"/>
             </div>
@@ -304,7 +305,7 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group" id="ws-name-group" style="display:none;">
           <label>Workshop Name <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">🔧</span>
+            <span class="input-icon"><i class="fa-solid fa-tools"></i> </span>
             <input type="text" id="r-wsname" placeholder="e.g. CARtime Nahoon"
               oninput="liveVal('r-wsname','r-wsname-err',v=>v.trim().length>1)"/>
           </div>
@@ -314,7 +315,7 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group">
           <label>Email Address <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">✉️</span>
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i> </span>
             <input type="email" id="r-email" placeholder="you@email.com"
               oninput="liveVal('r-email','r-email-err',v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))"/>
           </div>
@@ -324,7 +325,7 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group">
           <label>Phone Number <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">📞</span>
+            <span class="input-icon"><i class="fa-solid fa-phone"></i> </span>
             <input type="tel" id="r-phone" placeholder="e.g. 083 456 7890"
               oninput="liveVal('r-phone','r-phone-err',v=>/^(\+27|0)[6-8][0-9]{8}$/.test(v.replace(/\s/g,'')))"/>
           </div>
@@ -334,10 +335,10 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group">
           <label>Password <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">🔒</span>
+            <span class="input-icon"><i class="fa-solid fa-lock"></i> </span>
             <input type="password" id="r-pw" placeholder="Create a strong password"
               oninput="checkStrength(this.value);liveVal('r-pw','r-pw-err',v=>v.length>=8)"/>
-            <button class="pw-toggle" type="button" onclick="togglePw('r-pw',this)">👁️</button>
+            <button class="pw-toggle" type="button" onclick="togglePw('r-pw',this)"><i class="fa-solid fa-eye"></i></button>
           </div>
           <div class="err-msg" id="r-pw-err">Password must be at least 8 characters.</div>
           <div class="pw-strength">
@@ -354,10 +355,10 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
         <div class="form-group">
           <label>Confirm Password <span class="req">*</span></label>
           <div class="input-wrap">
-            <span class="input-icon">🔒</span>
+            <span class="input-icon"><i class="fa-solid fa-lock"></i> </span>
             <input type="password" id="r-pw2" placeholder="Repeat your password"
               oninput="liveVal('r-pw2','r-pw2-err',v=>v===document.getElementById('r-pw').value&&v.length>0)"/>
-            <button class="pw-toggle" type="button" onclick="togglePw('r-pw2',this)">👁️</button>
+            <button class="pw-toggle" type="button" onclick="togglePw('r-pw2',this)"><i class="fa-solid fa-eye"></i> </button>
           </div>
           <div class="err-msg" id="r-pw2-err">Passwords do not match.</div>
         </div>
@@ -382,12 +383,12 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
 <div class="social-row">
     <button class="social-btn"
             onclick="window.location.href='https://accounts.google.com/'">
-        🌐 Google
+        <i class="fab fa-google"></i>  Google
     </button>
 
     <button class="social-btn"
             onclick="window.location.href='https://www.facebook.com/'">
-        📘 Facebook
+        <i class="fab fa-facebook"></i>  Facebook
     </button>
 </div>
 
@@ -418,13 +419,13 @@ label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:upperca
 <!-- FORGOT PASSWORD OVERLAY -->
 <div class="forgot-overlay" id="forgotOverlay">
   <div class="success-box">
-    <div class="success-icon">🔑</div>
+    <div class="success-icon"><i class="fa-solid fa-key"></i> </div>
     <h2 style="color:var(--primary);font-family:'Bebas Neue';letter-spacing:2px;font-size:2rem;">Reset Password</h2>
     <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.2rem;">Enter your email and we'll send you a reset link.</p>
     <div class="form-group" style="text-align:left;margin-bottom:1rem;">
       <label>Email Address</label>
       <div class="input-wrap">
-        <span class="input-icon">✉️</span>
+        <span class="input-icon"><i class="fa-solid fa-envelope"></i> </span>
         <input type="email" id="forgot-email" placeholder="you@email.com"/>
       </div>
     </div>
@@ -481,9 +482,18 @@ function liveVal(id, errId, fn) {
 
 /* ── TOGGLE PASSWORD ── */
 function togglePw(id, btn) {
-  const el = document.getElementById(id);
-  el.type  = el.type === 'password' ? 'text' : 'password';
-  btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+  const input = document.getElementById(id);
+  const icon = btn.querySelector("i");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
 }
 
 /* ── PASSWORD STRENGTH ── */

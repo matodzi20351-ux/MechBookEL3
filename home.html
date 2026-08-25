@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MechBook EL – Book a Mechanic Online</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -29,7 +30,7 @@
   <div class="hero-content">
 
     <div class="hero-badge">
-      🔧 East London's #1 Mechanic Booking Platform
+      <i class="fa-solid fa-tools"></i> East London's #1 Mechanic Booking Platform
     </div>
 
     <h1>
@@ -44,7 +45,7 @@
 
     <div class="hero-btns">
       <a href="#" class="btn-hero-main" onclick="showAuthPopup(event)">
-        🔍 Find a Workshop
+        <i class="fa-solid fa-search"></i> Find a Workshop
       </a>
       <a href="#" class="btn-hero-ghost" onclick="showRegisterPanel(); return false;">
         Create Free Account
@@ -125,7 +126,7 @@
 <div class="auth-popup" id="authPopup">
   <div class="auth-box">
     <button class="close-popup" onclick="closePopup()">✕</button>
-    <div class="auth-icon">🔒</div>
+    <div class="auth-icon"><i class="fa-solid fa-lock"></i></div>
     <h2>Login Required</h2>
     <p>You must login or create an account before booking a workshop.</p>
     <div class="auth-buttons">
@@ -152,7 +153,7 @@
     <div class="form-group">
       <label>Email Address <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">✉️</span>
+        <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
         <input type="email" id="hl-email" placeholder="you@email.com"/>
       </div>
       <div class="err-msg" id="hl-email-err">Please enter a valid email address.</div>
@@ -161,14 +162,17 @@
     <div class="form-group">
       <label>Password <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">🔒</span>
+        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
         <input type="password" id="hl-pw" placeholder="Enter your password"/>
-        <button class="pw-toggle" type="button" onclick="togglePw('hl-pw',this)">👁️</button>
+        <button class="pw-toggle" type="button" onclick="togglePw('hl-pw',this)"><i class="fa-solid fa-eye"></i></button>
       </div>
       <div class="err-msg" id="hl-pw-err">Password must be at least 6 characters.</div>
     </div>
 
     <button class="submit-btn" onclick="doHomeLogin()">Login to MechBook EL</button>
+    <div class="forgot-row">
+  <a href="#" class="forgot-link" onclick="showForgot();return false;">Forgot password?</a>
+</div>
 
     <div class="form-foot" style="margin-top:1rem;">
       Don't have an account?
@@ -187,24 +191,24 @@
     <p class="panel-sub">Create your free account today.</p>
 
     <div class="user-type" style="margin-bottom:1.2rem;">
-      <button class="type-btn sel" id="hr-type-owner"    onclick="selRegType('owner',this)">🚗 Car Owner</button>
-      <button class="type-btn"     id="hr-type-mechanic" onclick="selRegType('mechanic',this)">🔧 Workshop Owner</button>
+      <button class="type-btn sel" id="hr-type-owner"    onclick="selRegType('owner',this)"> <i class="fa-solid fa-car"></i>Car Owner</button>
+      <button class="type-btn"     id="hr-type-mechanic" onclick="selRegType('mechanic',this)"> <i class="fa-solid fa-tools"></i>Workshop Owner</button>
     </div>
 
     <div class="form-row-2">
       <div class="form-group">
         <label>First Name <span class="req">*</span></label>
         <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input type="text" id="hr-fname" placeholder="e.g. Sipho"/>
+          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+          <input type="text" id="hr-fname" placeholder="e.g. Venus"/>
         </div>
         <div class="err-msg" id="hr-fname-err">Enter your first name.</div>
       </div>
       <div class="form-group">
         <label>Last Name <span class="req">*</span></label>
         <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input type="text" id="hr-lname" placeholder="e.g. Dlamini"/>
+          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+          <input type="text" id="hr-lname" placeholder="e.g. Nosipho"/>
         </div>
         <div class="err-msg" id="hr-lname-err">Enter your last name.</div>
       </div>
@@ -213,7 +217,7 @@
     <div class="form-group" id="hr-ws-group" style="display:none;">
       <label>Workshop Name <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">🔧</span>
+        <span class="input-icon"><i class="fa-solid fa-tools"></i></span>
         <input type="text" id="hr-wsname" placeholder="e.g. CARtime Nahoon"/>
       </div>
       <div class="err-msg" id="hr-wsname-err">Enter your workshop name.</div>
@@ -222,7 +226,7 @@
     <div class="form-group">
       <label>Email Address <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">✉️</span>
+        <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
         <input type="email" id="hr-email" placeholder="you@email.com"/>
       </div>
       <div class="err-msg" id="hr-email-err">Enter a valid email address.</div>
@@ -231,7 +235,7 @@
     <div class="form-group">
       <label>Phone Number <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">📞</span>
+        <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
         <input type="tel" id="hr-phone" placeholder="e.g. 083 456 7890"/>
       </div>
       <div class="err-msg" id="hr-phone-err">Enter a valid SA phone number.</div>
@@ -240,9 +244,9 @@
     <div class="form-group">
       <label>Password <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">🔒</span>
+        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
         <input type="password" id="hr-pw" placeholder="Create a strong password"/>
-        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw',this)">👁️</button>
+        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw',this)"><i class="fa-solid fa-eye"></i></button>
       </div>
       <div class="err-msg" id="hr-pw-err">Password must be at least 8 characters.</div>
     </div>
@@ -250,9 +254,9 @@
     <div class="form-group">
       <label>Confirm Password <span class="req">*</span></label>
       <div class="input-wrap">
-        <span class="input-icon">🔒</span>
+        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
         <input type="password" id="hr-pw2" placeholder="Repeat your password"/>
-        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw2',this)">👁️</button>
+        <button class="pw-toggle" type="button" onclick="togglePw('hr-pw2',this)"><i class="fa-solid fa-eye"></i></button>
       </div>
       <div class="err-msg" id="hr-pw2-err">Passwords do not match.</div>
     </div>
@@ -289,7 +293,7 @@
 
     <!-- About -->
     <div class="info-section">
-      <div class="info-section-title">🔧 About MechBook EL</div>
+      <div class="info-section-title"><i class="fa-solid fa-tools"></i> About MechBook EL</div>
       <p class="info-text">
         MechBook EL is East London's first dedicated online workshop booking platform. We connect
         car owners with trusted, verified mechanics across the city — no phone calls, no queues,
@@ -306,11 +310,13 @@
 
     <!-- Workshops -->
     <div class="info-section">
-      <div class="info-section-title">🏭 Our Partner Workshops</div>
+      <div class="info-section-title"><i class="fa-solid fa-warehouse"></i> Our Partner Workshops</div>
       <div class="workshops-grid">
 
         <div class="ws-card">
-          <div class="ws-icon">🚗</div>
+          <div class="ws-icon">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+          </div>
           <div>
             <div class="ws-name">CaRline Nahoon</div>
             <div class="ws-meta">Nahoon, East London</div>
@@ -319,7 +325,9 @@
         </div>
 
         <div class="ws-card">
-          <div class="ws-icon">🔩</div>
+          <div class="ws-icon">
+              <i class="fa-solid fa-gear"></i>
+          </div>
           <div>
             <div class="ws-name">P &amp; R Motors</div>
             <div class="ws-meta">East London CBD</div>
@@ -328,7 +336,8 @@
         </div>
 
         <div class="ws-card">
-          <div class="ws-icon">🛠️</div>
+          <div class="ws-icon">
+             <i class="fa-solid fa-screwdriver-wrench"></i></div>
           <div>
             <div class="ws-name">Ian's Auto Clinic</div>
             <div class="ws-meta">Gonubie, East London</div>
@@ -337,7 +346,8 @@
         </div>
 
         <div class="ws-card">
-          <div class="ws-icon">⚙️</div>
+          <div class="ws-icon">
+             <i class="fa-solid fa-gear"></i></div>
           <div>
             <div class="ws-name">MD Enterprises</div>
             <div class="ws-meta">Cambridge, East London</div>
@@ -346,7 +356,8 @@
         </div>
 
         <div class="ws-card">
-          <div class="ws-icon">🏁</div>
+          <div class="ws-icon">
+             <i class="fa-solid fa-flag-checkered"></i></div>
           <div>
             <div class="ws-name">BMB Auto</div>
             <div class="ws-meta">Vincent, East London</div>
