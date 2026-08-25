@@ -579,7 +579,7 @@ async function doLogin() {
   setLoading('loginBtn', true);
 
   try {
-    const res  = await fetch("http://localhost:3000/api/login", {
+    const res  = await fetch("https://mechbookel3-1.onrender.com/api/login", {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -657,7 +657,7 @@ async function doRegister() {
   setLoading('registerBtn', true);
 
   try {
-    const res  = await fetch("http://localhost:3000/api/register", {
+    const res  = await fetch("https://mechbookel3-1.onrender.com/api/register", {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
