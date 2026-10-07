@@ -121,6 +121,9 @@ footer span{color:var(--primary);}
   <div class="nav-right">
    
     <a href="home.html" class="btn-ghost">Home</a>
+    <div class="nav-left">
+  <a href="dashboard.html" class="btn-back" style="display:inline-block;">← Back to Dashboard</a>
+</div>
   </div>
 </nav>
 
@@ -203,7 +206,7 @@ footer span{color:var(--primary);}
         </div>
         <div class="form-group">
           <label>Registration Number</label>
-          <input type="text" id="rego" placeholder="e.g. CA 123-456"/>
+          <input type="text" id="rego" placeholder="e.g. GHF 256 L"/>
         </div>
         <div class="form-group full">
           <label>Service Required <span class="req">*</span></label>
@@ -299,9 +302,6 @@ footer span{color:var(--primary);}
 </button>
   </div>
 
-  <div style="text-align:center;margin-top:1.5rem;">
-    <a href="dashboard.html" class="btn-back" style="display:inline-block;">← Back to Dashboard</a>
-  </div>
 </div>
 
 <!-- SUCCESS MODAL -->
@@ -358,7 +358,7 @@ async function api(path, options = {}) {
     return data;
 }
 
-/* ── PRE-FILL FROM LOGGED-IN USER ── */
+// PRE-FILL FROM LOGGED-IN USER 
 async function prefill() {
     try {
 
@@ -417,8 +417,11 @@ if (preShop) {
     }
   });
 }
-
-/* tshifhinga Slots*/
+//UYA KHA DASHBOARD
+function goToDashboard() {
+  window.location.href = "dashboard.html";
+}
+// tshifhinga Slots
 function updateSlots(){
   const d = document.getElementById('date').value;
   if(!d) return;
@@ -452,7 +455,7 @@ function selTime(t, el){
   updateSteps();
 }
 
-/*Live summary */
+//Live summary
 function updateSummary(){
   const fn  = document.getElementById('fname').value.trim();
   const ln  = document.getElementById('lname').value.trim();
@@ -528,7 +531,7 @@ function updateSteps(){
   setStepState(4, step4Done ? 'done' : (step3Done ? 'active' : 'pending'));
 }
 
-/* ── VALIDATE ── */
+//VALIDATE
 function validate(){
   let ok = true;
   const checks = [
@@ -552,12 +555,12 @@ function validate(){
   return ok;
 }
 
-/* ── GENERATE REF (fallback only; server normally returns its own ref) ── */
+// GENERATE REF (fallback only; server normally returns its own ref)
 function genRef(){
   return 'MCH-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*9000)+1000);
 }
 
-/* ── SUBMIT ── */
+// SUBMIT 
 async function submitForm() {
     if (!validate()) return;
 

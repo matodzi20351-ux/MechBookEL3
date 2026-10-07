@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MechBook EL User Survey</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2563EB;
+    --accent:#0EA5E9;
+    --bg:#F4F7FB;
+    --card:#FFFFFF;
+    --text-dark:#0F172A;
+    --text-muted:#64748B;
+    --border:#D1D5DB;
+    --success:#16A34A;
+    --danger:#DC2626;
+    --radius:16px;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    background:var(--bg);
+    color:var(--text-dark);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.brand-name{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:0.5px;
+  }
+
+  /* ---------- NAVBAR ---------- */
+  .navbar{
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  .navbar-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .navbar-logo{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:18px;
+  }
+  .brand-name{
+    font-size:24px;
+    color:var(--text-dark);
+  }
+  .brand-name span{
+    color:var(--primary);
+  }
+  .navbar-back{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--primary);
+    text-decoration:none;
+    font-weight:700;
+    font-size:14px;
+    padding:8px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    transition:all .2s ease;
+  }
+  .navbar-back:hover{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+  }
+
+  /* ---------- PAGE HEADER ---------- */
+  .page-header{
+    text-align:center;
+    padding:40px 20px 12px;
+  }
+  .page-header h1{
+    font-size:42px;
+    margin:0 0 8px;
+    color:var(--text-dark);
+  }
+  .page-header p{
+    max-width:600px;
+    margin:0 auto;
+    color:var(--text-muted);
+    font-size:15px;
+    line-height:1.6;
+  }
+
+  /* ---------- PROGRESS ---------- */
+  .progress-wrap{
+    max-width:720px;
+    margin:24px auto 0;
+    padding:0 20px;
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    font-weight:700;
+    color:var(--text-muted);
+    margin-bottom:6px;
+  }
+  .progress-label span.percent{
+    color:var(--primary);
+  }
+  .progress-track{
+    width:100%;
+    height:10px;
+    background:#E2E8F0;
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    border-radius:999px;
+    transition:width .35s ease;
+  }
+  .step-dots{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+  }
+  .step-dot{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:#E2E8F0;
+    color:var(--text-muted);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:800;
+    border:2px solid transparent;
+    transition:all .2s ease;
+  }
+  .step-dot.active{
+    background:var(--primary);
+    color:#fff;
+  }
+  .step-dot.done{
+    background:var(--success);
+    color:#fff;
+  }
+
+  /* ---------- SURVEY CARD ---------- */
+  .survey-wrap{
+    max-width:720px;
+    margin:24px auto 60px;
+    padding:0 20px;
+  }
+  .survey-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:32px;
+    box-shadow:0 10px 30px rgba(15,23,42,0.04);
+  }
+  .survey-section{
+    display:none;
+    animation:fadeIn .3s ease;
+  }
+  .survey-section.active{
+    display:block;
+  }
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:26px;
+    margin:0 0 4px;
+    color:var(--text-dark);
+  }
+  .section-title i{
+    color:var(--primary);
+    font-size:20px;
+  }
+  .section-sub{
+    color:var(--text-muted);
+    font-size:14px;
+    margin:0 0 24px;
+  }
+
+  .question{
+    margin-bottom:26px;
+    padding-bottom:22px;
+    border-bottom:1px solid #EEF1F5;
+  }
+  .question:last-child{
+    border-bottom:none;
+  }
+  .question-label{
+    font-weight:700;
+    font-size:15px;
+    margin-bottom:12px;
+    display:flex;
+    gap:6px;
+    align-items:flex-start;
+  }
+  .question-label .req{
+    color:var(--danger);
+    font-size:13px;
+  }
+  .question-hint{
+    font-size:12.5px;
+    color:var(--text-muted);
+    margin:-8px 0 12px;
+  }
+  .error-msg{
+    display:none;
+    color:var(--danger);
+    font-size:12.5px;
+    margin-top:8px;
+    align-items:center;
+    gap:6px;
+  }
+  .error-msg.show{
+    display:flex;
+  }
+  .question.has-error .error-msg{
+    display:flex;
+  }
+
+  /* ---------- CUSTOM RADIO / CHECKBOX OPTIONS ---------- */
+  .option-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 14px;
+    border:1.5px solid var(--border);
+    border-radius:12px;
+    cursor:pointer;
+    transition:all .2s ease;
+    background:#FBFCFE;
+  }
+  .option-item:hover{
+    border-color:var(--accent);
+    background:#F0F9FF;
+  }
+  .option-item input{
+    display:none;
+  }
+  .option-marker{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:2px solid var(--border);
+    flex-shrink:0;
+    position:relative;
+    transition:all .2s ease;
+  }
+  .option-item input[type="checkbox"] + .option-marker{
+    border-radius:6px;
+  }
+  .option-item input:checked + .option-marker{
+    border-color:var(--primary);
+    background:var(--primary);
+  }
+  .option-item input:checked + .option-marker::after{
+    content:'';
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#fff;
+  }
+  .option-item input[type="checkbox"]:checked + .option-marker::after{
+    width:6px;
+    height:10px;
+    border-radius:0;
+    border-right:2px solid #fff;
+    border-bottom:2px solid #fff;
+    background:transparent;
+    transform:translate(-50%,-60%) rotate(45deg);
+  }
+  .option-item.selected{
+    border-color:var(--primary);
+    background:#EFF6FF;
+  }
+  .option-text{
+    font-size:14.5px;
+    color:var(--text-dark);
+  }
+
+  .option-item.other-item{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .other-item .other-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .other-input{
+    display:none;
+    margin-top:10px;
+    width:100%;
+    padding:10px 12px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-family:inherit;
+    font-size:14px;
+  }
+  .other-item.selected .other-input{
+    display:block;
+  }
+
+  /* ---------- LIKERT ---------- */
+  .likert-row{
+    margin-bottom:20px;
+  }
+  .likert-statement{
+    font-size:14.5px;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .likert-scale{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .likert-option{
+    flex:1;
+    text-align:center;
+  }
+  .likert-option input{
+    display:none;
+  }
+  .likert-circle{
+    width:100%;
+    padding:10px 4px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-muted);
+    transition:all .2s ease;
+    display:block;
+  }
+  .likert-circle:hover{
+    border-color:var(--accent);
+  }
+  .likert-option input:checked + .likert-circle{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+  }
+  .likert-caption{
+    display:flex;
+    justify-content:space-between;
+    font-size:10.5px;
+    color:var(--text-muted);
+    margin-top:6px;
+  }
+
+  /* ---------- STAR RATING ---------- */
+  .star-rating{
+    display:flex;
+    gap:8px;
+    font-size:32px;
+  }
+  .star-rating input{
+    display:none;
+  }
+  .star-rating label{
+    color:#E2E8F0;
+    cursor:pointer;
+    transition:transform .15s ease, color .15s ease;
+  }
+  .star-rating label:hover,
+  .star-rating label:hover ~ label{
+    transform:scale(1.1);
+  }
+  .star-rating.filled label{
+    color:#FBBF24;
+  }
+
+  /* ---------- INPUTS ---------- */
+  .text-input,
+  .select-input{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--text-dark);
+    background:#fff;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .text-input:focus,
+  .select-input:focus,
+  .other-input:focus{
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+  }
+  textarea.text-input{
+    resize:vertical;
+    min-height:110px;
+  }
+  .char-counter{
+    text-align:right;
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:6px;
+  }
+
+  /* ---------- CONTACT NOTE ---------- */
+  .contact-note{
+    background:#F0F9FF;
+    border:1px solid #BAE6FD;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:13px;
+    color:var(--text-muted);
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-bottom:20px;
+  }
+  .contact-note i{
+    color:var(--accent);
+    margin-top:2px;
+  }
+
+  /* ---------- NAV BUTTONS ---------- */
+  .form-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+    padding-top:22px;
+    border-top:1px solid var(--border);
+  }
+  .btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 22px;
+    border-radius:10px;
+    border:none;
+    font-family:inherit;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .btn-primary{
+    background:var(--primary);
+    color:#fff;
+  }
+  .btn-primary:hover{
+    background:#1D4ED8;
+    transform:translateY(-1px);
+  }
+  .btn-secondary{
+    background:#fff;
+    color:var(--text-dark);
+    border:1.5px solid var(--border);
+  }
+  .btn-secondary:hover{
+    border-color:var(--primary);
+    color:var(--primary);
+  }
+  .btn-success{
+    background:var(--success);
+    color:#fff;
+  }
+  .btn-success:hover{
+    background:#15803D;
+    transform:translateY(-1px);
+  }
+  .btn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+    transform:none !important;
+  }
+  .btn-spacer{
+    width:1px;
+  }
+
+  /* ---------- CONFIRMATION ---------- */
+  .confirmation{
+    display:none;
+    text-align:center;
+    padding:30px 10px;
+  }
+  .confirmation.active{
+    display:block;
+  }
+  .confirmation-icon{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:#DCFCE7;
+    color:var(--success);
+    font-size:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 20px;
+  }
+  .confirmation h2{
+    font-size:30px;
+    margin:0 0 10px;
+  }
+  .confirmation p{
+    color:var(--text-muted);
+    font-size:14.5px;
+    max-width:420px;
+    margin:0 auto 24px;
+    line-height:1.6;
+  }
+
+  @media (max-width:640px){
+    .page-header h1{font-size:32px;}
+    .survey-card{padding:22px;}
+    .likert-scale{gap:5px;}
+    .likert-circle{font-size:11px; padding:8px 2px;}
+    .step-dots{display:none;}
+    .navbar-back span{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar">
+  <div class="navbar-left">
+   
+    <div class="brand-name">Mech<span>Book</span> EL</div>
+  </div>
+  <a href="dashboard.html" class="navbar-back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back to Dashboard</span>
+  </a>
+</nav>
+
+<!-- ===================== HEADER ===================== -->
+<div class="page-header">
+  <h1>MechBook EL User Survey</h1>
+  <p>Help us improve your vehicle servicing experience. Your feedback will help us evaluate and improve the MechBook EL platform.</p>
+</div>
+
+<!-- ===================== PROGRESS ===================== -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-label">
+    <span>Survey Progress</span>
+    <span class="percent" id="progressPercent">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="step-dots" id="stepDots"></div>
+</div>
+
+<div class="survey-wrap">
+  <div class="survey-card" id="surveyCard">
+
+    <!-- FORM -->
+    <form id="surveyForm" novalidate>
+
+      <!-- SECTION 1 -->
+      <section class="survey-section active" data-section="1">
+        <h2 class="section-title"><i class="fa-solid fa-user"></i> About You</h2>
+        <p class="section-sub">A few quick questions about you as a vehicle owner or workshop.</p>
+
+        <div class="question" data-q="userType">
+          <div class="question-label">1. What type of user are you? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="userType">
+            <label class="option-item"><input type="radio" name="userType" value="Car Owner"><span class="option-marker"></span><span class="option-text">Car Owner</span></label>
+            <label class="option-item"><input type="radio" name="userType" value="Workshop/Mechanic"><span class="option-marker"></span><span class="option-text">Workshop/Mechanic</span></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+
+        <div class="question" data-q="serviceFrequency">
+          <div class="question-label">2. How often do you take your vehicle for servicing or repairs? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="serviceFrequency">
+            <label class="option-item"><input type="radio" name="serviceFrequency" value="Less than once a year"><span class="option-marker"></span><span class="option-text">Less than once a year</span></label>
+            <label class="option-item"><input type="radio" name="serviceFrequency" value="Once a year"><span class="option-marker"></span><span class="option-text">Once a year</span></label>
+            <label class="option-item"><input type="radio" name="serviceFrequency" value="2–3 times a year"><span class="option-marker"></span><span class="option-text">2–3 times a year</span></label>
+            <label class="option-item"><input type="radio" name="serviceFrequency" value="More than 3 times a year"><span class="option-marker"></span><span class="option-text">More than 3 times a year</span></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+
+        <div class="question" data-q="bookedOnline">
+          <div class="question-label">3. Have you ever booked a mechanic or workshop online? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="bookedOnline">
+            <label class="option-item"><input type="radio" name="bookedOnline" value="Yes"><span class="option-marker"></span><span class="option-text">Yes</span></label>
+            <label class="option-item"><input type="radio" name="bookedOnline" value="No"><span class="option-marker"></span><span class="option-text">No</span></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+      </section>
+
+      <!-- SECTION 2 -->
+      <section class="survey-section" data-section="2">
+        <h2 class="section-title"><i class="fa-solid fa-magnifying-glass"></i> Current Experience</h2>
+        <p class="section-sub">Tell us how you currently find and book a mechanic.</p>
+
+        <div class="question" data-q="currentMethod">
+          <div class="question-label">4. How do you currently find a mechanic/workshop? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="currentMethod">
+            <label class="option-item"><input type="radio" name="currentMethod" value="Google/Search engines"><span class="option-marker"></span><span class="option-text">Google/Search engines</span></label>
+            <label class="option-item"><input type="radio" name="currentMethod" value="Social media"><span class="option-marker"></span><span class="option-text">Social media</span></label>
+            <label class="option-item"><input type="radio" name="currentMethod" value="Word of mouth"><span class="option-marker"></span><span class="option-text">Word of mouth</span></label>
+            <label class="option-item"><input type="radio" name="currentMethod" value="Phone call"><span class="option-marker"></span><span class="option-text">Phone call</span></label>
+            <label class="option-item"><input type="radio" name="currentMethod" value="Visit the workshop directly"><span class="option-marker"></span><span class="option-text">Visit the workshop directly</span></label>
+            <label class="option-item other-item" data-other-for="currentMethod">
+              <div class="other-row"><input type="radio" name="currentMethod" value="Other"><span class="option-marker"></span><span class="option-text">Other</span></div>
+              <input type="text" class="other-input" placeholder="Please specify...">
+            </label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+
+        <div class="question" data-q="bookingProblems">
+          <div class="question-label">5. What problems do you experience when trying to book a mechanic? <span class="req">*</span></div>
+          <div class="question-hint">Select all that apply.</div>
+          <div class="option-list" data-type="checkbox" data-name="bookingProblems">
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Difficulty finding a trusted mechanic"><span class="option-marker"></span><span class="option-text">Difficulty finding a trusted mechanic</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Not knowing workshop availability"><span class="option-marker"></span><span class="option-text">Not knowing workshop availability</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Long waiting times"><span class="option-marker"></span><span class="option-text">Long waiting times</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Difficulty comparing workshops"><span class="option-marker"></span><span class="option-text">Difficulty comparing workshops</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Difficulty contacting workshops"><span class="option-marker"></span><span class="option-text">Difficulty contacting workshops</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="Unclear pricing"><span class="option-marker"></span><span class="option-text">Unclear pricing</span></label>
+            <label class="option-item"><input type="checkbox" name="bookingProblems" value="No online booking option"><span class="option-marker"></span><span class="option-text">No online booking option</span></label>
+            <label class="option-item other-item" data-other-for="bookingProblems">
+              <div class="other-row"><input type="checkbox" name="bookingProblems" value="Other"><span class="option-marker"></span><span class="option-text">Other</span></div>
+              <input type="text" class="other-input" placeholder="Please specify...">
+            </label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select at least one option.</div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 -->
+      <section class="survey-section" data-section="3">
+        <h2 class="section-title"><i class="fa-solid fa-gauge-high"></i> MechBook EL Usability</h2>
+        <p class="section-sub">Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree).</p>
+
+        <div id="likertContainer"></div>
+      </section>
+
+      <!-- SECTION 4 -->
+      <section class="survey-section" data-section="4">
+        <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Features</h2>
+        <p class="section-sub">Which parts of MechBook EL matter most to you?</p>
+
+        <div class="question" data-q="usefulFeatures">
+          <div class="question-label">14. Which MechBook EL features do you find most useful? <span class="req">*</span></div>
+          <div class="question-hint">Select all that apply.</div>
+          <div class="option-list" data-type="checkbox" data-name="usefulFeatures">
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Workshop search"><span class="option-marker"></span><span class="option-text">Workshop search</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Workshop information"><span class="option-marker"></span><span class="option-text">Workshop information</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Online booking"><span class="option-marker"></span><span class="option-text">Online booking</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Booking dashboard"><span class="option-marker"></span><span class="option-text">Booking dashboard</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Booking status"><span class="option-marker"></span><span class="option-text">Booking status</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="Notifications"><span class="option-marker"></span><span class="option-text">Notifications</span></label>
+            <label class="option-item"><input type="checkbox" name="usefulFeatures" value="User account"><span class="option-marker"></span><span class="option-text">User account</span></label>
+            <label class="option-item other-item" data-other-for="usefulFeatures">
+              <div class="other-row"><input type="checkbox" name="usefulFeatures" value="Other"><span class="option-marker"></span><span class="option-text">Other</span></div>
+              <input type="text" class="other-input" placeholder="Please specify...">
+            </label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select at least one option.</div>
+        </div>
+
+        <div class="question" data-q="improveFeature">
+          <div class="question-label">15. Which feature would you most like us to improve? <span class="req">*</span></div>
+          <select class="select-input" name="improveFeature" id="improveFeature">
+            <option value="">Select a feature...</option>
+            <option value="Workshop search">Workshop search</option>
+            <option value="Workshop information">Workshop information</option>
+            <option value="Online booking">Online booking</option>
+            <option value="Booking dashboard">Booking dashboard</option>
+            <option value="Booking status">Booking status</option>
+            <option value="Notifications">Notifications</option>
+            <option value="User account">User account</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+      </section>
+
+      <!-- SECTION 5 -->
+      <section class="survey-section" data-section="5">
+        <h2 class="section-title"><i class="fa-solid fa-star"></i> Overall Experience</h2>
+        <p class="section-sub">Share your overall impression of MechBook EL.</p>
+
+        <div class="question" data-q="overallRating">
+          <div class="question-label">16. How would you rate your overall experience with MechBook EL? <span class="req">*</span></div>
+          <div class="star-rating" id="starRating">
+            <input type="radio" name="overallRating" id="star5" value="5"><label for="star5" data-star="5"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" name="overallRating" id="star4" value="4"><label for="star4" data-star="4"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" name="overallRating" id="star3" value="3"><label for="star3" data-star="3"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" name="overallRating" id="star2" value="2"><label for="star2" data-star="2"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" name="overallRating" id="star1" value="1"><label for="star1" data-star="1"><i class="fa-solid fa-star"></i></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select a star rating.</div>
+        </div>
+
+        <div class="question" data-q="likedMost">
+          <div class="question-label">17. What did you like most about MechBook EL? <span class="req">*</span></div>
+          <textarea class="text-input" name="likedMost" maxlength="500" placeholder="Tell us what you enjoyed..."></textarea>
+          <div class="char-counter"><span class="count">0</span>/500</div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please share your feedback.</div>
+        </div>
+
+        <div class="question" data-q="problems">
+          <div class="question-label">18. What problems or difficulties did you experience? <span class="req">*</span></div>
+          <textarea class="text-input" name="problems" maxlength="500" placeholder="Describe any issues you faced..."></textarea>
+          <div class="char-counter"><span class="count">0</span>/500</div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please share your feedback.</div>
+        </div>
+
+        <div class="question" data-q="improvements">
+          <div class="question-label">19. What improvements would you suggest? <span class="req">*</span></div>
+          <textarea class="text-input" name="improvements" maxlength="500" placeholder="Share your suggestions..."></textarea>
+          <div class="char-counter"><span class="count">0</span>/500</div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please share your feedback.</div>
+        </div>
+      </section>
+
+      <!-- SECTION 6 -->
+      <section class="survey-section" data-section="6">
+        <h2 class="section-title"><i class="fa-solid fa-flag-checkered"></i> Final Feedback</h2>
+        <p class="section-sub">Just a couple more questions and some optional contact details.</p>
+
+        <div class="question" data-q="wouldUse">
+          <div class="question-label">20. Would you use MechBook EL if it were available? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="wouldUse">
+            <label class="option-item"><input type="radio" name="wouldUse" value="Definitely yes"><span class="option-marker"></span><span class="option-text">Definitely yes</span></label>
+            <label class="option-item"><input type="radio" name="wouldUse" value="Probably yes"><span class="option-marker"></span><span class="option-text">Probably yes</span></label>
+            <label class="option-item"><input type="radio" name="wouldUse" value="Not sure"><span class="option-marker"></span><span class="option-text">Not sure</span></label>
+            <label class="option-item"><input type="radio" name="wouldUse" value="Probably no"><span class="option-marker"></span><span class="option-text">Probably no</span></label>
+            <label class="option-item"><input type="radio" name="wouldUse" value="Definitely no"><span class="option-marker"></span><span class="option-text">Definitely no</span></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+
+        <div class="question" data-q="wouldRecommend">
+          <div class="question-label">21. Would you recommend MechBook EL to others? <span class="req">*</span></div>
+          <div class="option-list" data-type="radio" data-name="wouldRecommend">
+            <label class="option-item"><input type="radio" name="wouldRecommend" value="Yes"><span class="option-marker"></span><span class="option-text">Yes</span></label>
+            <label class="option-item"><input type="radio" name="wouldRecommend" value="Maybe"><span class="option-marker"></span><span class="option-text">Maybe</span></label>
+            <label class="option-item"><input type="radio" name="wouldRecommend" value="No"><span class="option-marker"></span><span class="option-text">No</span></label>
+          </div>
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please select an option.</div>
+        </div>
+
+        <div class="contact-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Your contact information is optional and will only be used if we need clarification about your feedback.</span>
+        </div>
+
+        <div class="question" data-q="contactName">
+          <div class="question-label">Name <span style="color:var(--text-muted); font-weight:500; font-size:12.5px;">(optional)</span></div>
+          <input type="text" class="text-input" name="contactName" placeholder="Your name">
+        </div>
+
+        <div class="question" data-q="contactEmail">
+          <div class="question-label">Email <span style="color:var(--text-muted); font-weight:500; font-size:12.5px;">(optional)</span></div>
+          <input type="email" class="text-input" name="contactEmail" placeholder="you@example.com">
+          <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please enter a valid email address.</div>
+        </div>
+      </section>
+
+      <!-- NAV BUTTONS -->
+      <div class="form-nav">
+        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevSection()">
+          <i class="fa-solid fa-arrow-left"></i> Previous
+        </button>
+        <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextSection()">
+          Next <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <button type="button" class="btn btn-success" id="submitBtn" onclick="submitSurvey()" style="display:none;">
+          <i class="fa-solid fa-paper-plane"></i> Submit Survey
+        </button>
+      </div>
+    </form>
+
+    <!-- CONFIRMATION SCREEN -->
+    <div class="confirmation" id="confirmationScreen">
+      <div class="confirmation-icon"><i class="fa-solid fa-check"></i></div>
+      <h2>Thank You!</h2>
+      <p>Your feedback has been recorded. It will help us improve MechBook EL for car owners and workshops across East London.</p>
+      <button class="btn btn-primary" onclick="window.location.href='index.html'" style="margin:0 auto;">
+        <i class="fa-solid fa-house"></i> Return to Dashboard
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   MechBook EL Survey — logic
+   Sections 1-6, validation, progress tracking, star rating,
+   Likert scale generation, localStorage persistence.
+   ========================================================= */
+
+const TOTAL_SECTIONS = 6;
+let currentSection = 1;
+
+const likertQuestions = [
+  { key: "q6",  text: "The MechBook EL interface is easy to understand." },
+  { key: "q7",  text: "It is easy to find a suitable workshop." },
+  { key: "q8",  text: "The booking process is easy to complete." },
+  { key: "q9",  text: "The information provided about workshops is clear." },
+  { key: "q10", text: "The navigation is easy to use." },
+  { key: "q11", text: "The system makes booking a mechanic more convenient." },
+  { key: "q12", text: "I would use MechBook EL to book a mechanic in the future." },
+  { key: "q13", text: "I would recommend MechBook EL to another vehicle owner." }
+];
+
+/* ---------- Build Likert section dynamically ---------- */
+function buildLikertSection(){
+  const container = document.getElementById('likertContainer');
+  let html = '';
+  likertQuestions.forEach((q, i) => {
+    html += `
+      <div class="question" data-q="${q.key}">
+        <div class="question-label">${6 + i}. ${q.text} <span class="req">*</span></div>
+        <div class="likert-row">
+          <div class="likert-scale" data-name="${q.key}">
+            ${[1,2,3,4,5].map(v => `
+              <label class="likert-option">
+                <input type="radio" name="${q.key}" value="${v}">
+                <span class="likert-circle">${v}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div class="likert-caption">
+            <span>Strongly Disagree</span>
+            <span>Strongly Agree</span>
+          </div>
+        </div>
+        <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> Please rate this statement.</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+buildLikertSection();
+
+/* ---------- Build step dots ---------- */
+function buildStepDots(){
+  const dotsWrap = document.getElementById('stepDots');
+  let html = '';
+  for(let i = 1; i <= TOTAL_SECTIONS; i++){
+    html += `<div class="step-dot" data-dot="${i}">${i}</div>`;
+  }
+  dotsWrap.innerHTML = html;
+}
+buildStepDots();
+
+/* ---------- Option selection styling (radio/checkbox) ---------- */
+document.querySelectorAll('.option-item').forEach(item => {
+  const input = item.querySelector('input');
+  input.addEventListener('change', () => {
+    if(input.type === 'radio'){
+      document.querySelectorAll(`input[name="${input.name}"]`).forEach(sib => {
+        sib.closest('.option-item').classList.remove('selected');
+      });
+    }
+    item.classList.toggle('selected', input.checked);
+    clearError(item.closest('.question'));
+    updateProgress();
+  });
+});
+
+/* ---------- Star rating ---------- */
+const starRating = document.getElementById('starRating');
+starRating.querySelectorAll('input').forEach(input => {
+  input.addEventListener('change', () => {
+    starRating.classList.add('filled');
+    const val = parseInt(input.value);
+    starRating.querySelectorAll('label').forEach(label => {
+      label.style.color = parseInt(label.dataset.star) <= val ? '#FBBF24' : '#E2E8F0';
+    });
+    clearError(starRating.closest('.question'));
+    updateProgress();
+  });
+});
+
+/* ---------- "Other" text reveal ---------- */
+document.querySelectorAll('.other-item').forEach(item => {
+  const input = item.querySelector('input[type="radio"], input[type="checkbox"]');
+  input.addEventListener('change', () => {
+    item.classList.toggle('selected', input.checked);
+  });
+});
+
+/* ---------- Character counters ---------- */
+document.querySelectorAll('textarea.text-input').forEach(area => {
+  const counter = area.closest('.question').querySelector('.char-counter .count');
+  area.addEventListener('input', () => {
+    counter.textContent = area.value.length;
+    clearError(area.closest('.question'));
+    updateProgress();
+  });
+});
+
+/* ---------- Live validation clearing for text/select inputs ---------- */
+document.querySelectorAll('input.text-input, select.select-input').forEach(el => {
+  el.addEventListener('input', () => {
+    clearError(el.closest('.question'));
+    updateProgress();
+  });
+  el.addEventListener('change', () => {
+    clearError(el.closest('.question'));
+    updateProgress();
+  });
+});
+
+function clearError(questionEl){
+  if(!questionEl) return;
+  questionEl.classList.remove('has-error');
+}
+
+/* ---------- Validation per section ---------- */
+function validateSection(sectionNum){
+  const section = document.querySelector(`.survey-section[data-section="${sectionNum}"]`);
+  let valid = true;
+
+  section.querySelectorAll('.question').forEach(q => {
+    const key = q.dataset.q;
+    // optional contact fields skip required check
+    if(key === 'contactName') return;
+
+    const radios = q.querySelectorAll('input[type="radio"]');
+    const checkboxes = q.querySelectorAll('input[type="checkbox"]');
+    const textInput = q.querySelector('input.text-input[type="text"], textarea.text-input');
+    const emailInput = q.querySelector('input[type="email"]');
+    const selectInput = q.querySelector('select.select-input');
+
+    if(key === 'contactEmail'){
+      const val = emailInput.value.trim();
+      if(val !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
+        q.classList.add('has-error');
+        valid = false;
+      }
+      return;
+    }
+
+    if(radios.length){
+      const checked = [...radios].some(r => r.checked);
+      if(!checked){ q.classList.add('has-error'); valid = false; }
+      return;
+    }
+
+    if(checkboxes.length){
+      const checked = [...checkboxes].some(c => c.checked);
+      if(!checked){ q.classList.add('has-error'); valid = false; }
+      return;
+    }
+
+    if(selectInput){
+      if(!selectInput.value){ q.classList.add('has-error'); valid = false; }
+      return;
+    }
+
+    if(textInput){
+      if(!textInput.value.trim()){ q.classList.add('has-error'); valid = false; }
+      return;
+    }
+  });
+
+  return valid;
+}
+
+/* ---------- Section navigation ---------- */
+function showSection(num){
+  document.querySelectorAll('.survey-section').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.section) === num);
+  });
+
+  document.getElementById('prevBtn').style.visibility = num === 1 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').style.display = num === TOTAL_SECTIONS ? 'none' : 'flex';
+  document.getElementById('submitBtn').style.display = num === TOTAL_SECTIONS ? 'flex' : 'none';
+
+  document.querySelectorAll('.step-dot').forEach(dot => {
+    const d = parseInt(dot.dataset.dot);
+    dot.classList.remove('active','done');
+    if(d < num) dot.classList.add('done');
+    if(d === num) dot.classList.add('active');
+  });
+
+  document.getElementById('surveyCard').scrollIntoView({behavior:'smooth', block:'start'});
+  updateProgress();
+}
+
+function nextSection(){
+  if(!validateSection(currentSection)) return;
+  if(currentSection < TOTAL_SECTIONS){
+    currentSection++;
+    showSection(currentSection);
+  }
+}
+
+function prevSection(){
+  if(currentSection > 1){
+    currentSection--;
+    showSection(currentSection);
+  }
+}
+
+/* ---------- Progress bar ---------- */
+function updateProgress(){
+  const allQuestions = document.querySelectorAll('.survey-section .question');
+  let total = 0;
+  let filled = 0;
+
+  allQuestions.forEach(q => {
+    const key = q.dataset.q;
+    if(key === 'contactName' || key === 'contactEmail') return; // optional, not counted
+    total++;
+
+    const radios = q.querySelectorAll('input[type="radio"]');
+    const checkboxes = q.querySelectorAll('input[type="checkbox"]');
+    const textInput = q.querySelector('input.text-input[type="text"], textarea.text-input');
+    const selectInput = q.querySelector('select.select-input');
+
+    if(radios.length && [...radios].some(r => r.checked)) filled++;
+    else if(checkboxes.length && [...checkboxes].some(c => c.checked)) filled++;
+    else if(selectInput && selectInput.value) filled++;
+    else if(textInput && textInput.value.trim()) filled++;
+  });
+
+  const percent = total ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = percent + '%';
+  document.getElementById('progressPercent').textContent = percent + '%';
+}
+
+/* ---------- Collect all answers into an object ---------- */
+function collectAnswers(){
+  const data = {};
+
+  // simple radio groups
+  ['userType','serviceFrequency','bookedOnline','currentMethod','improveFeature',
+   'overallRating','wouldUse','wouldRecommend', ...likertQuestions.map(q => q.key)
+  ].forEach(name => {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    if(checked) data[name] = checked.value;
+    const select = document.querySelector(`select[name="${name}"]`);
+    if(select) data[name] = select.value;
+  });
+
+  // checkbox groups (multi-select)
+  ['bookingProblems','usefulFeatures'].forEach(name => {
+    data[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
+  });
+
+  // "Other" free text values
+  document.querySelectorAll('.other-item').forEach(item => {
+    const input = item.querySelector('input[type="radio"], input[type="checkbox"]');
+    const otherText = item.querySelector('.other-input');
+    if(input.checked && otherText.value.trim()){
+      const label = `${input.name}_otherText`;
+      data[label] = otherText.value.trim();
+    }
+  });
+
+  // free text
+  ['likedMost','problems','improvements','contactName'].forEach(name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if(el) data[name] = el.value.trim();
+  });
+
+  const emailEl = document.querySelector('[name="contactEmail"]');
+  data.contactEmail = emailEl ? emailEl.value.trim() : '';
+
+  data.submittedAt = new Date().toISOString();
+
+  return data;
+}
+
+/* ---------- Submit survey ---------- */
+function submitSurvey(){
+  if(!validateSection(currentSection)) return;
+
+  const answers = collectAnswers();
+
+  // Store temporarily in localStorage so responses can be tested/reviewed.
+  // Each submission is appended to an array under "mechbookel_survey_responses".
+  const existing = JSON.parse(localStorage.getItem('mechbookel_survey_responses') || '[]');
+  existing.push(answers);
+  localStorage.setItem('mechbookel_survey_responses', JSON.stringify(existing));
+
+  /* ---------------------------------------------------------
+     FUTURE BACKEND INTEGRATION POINT
+     Replace the localStorage block above with an API call once
+     the Node.js/Express backend is ready, e.g.:
+
+     fetch('/api/survey', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(answers)
+     })
+     .then(res => res.json())
+     .then(() => showConfirmation())
+     .catch(err => console.error('Survey submission failed:', err));
+
+     Keep showConfirmation() as the success callback either way.
+     --------------------------------------------------------- */
+
+  showConfirmation();
+}
+
+function showConfirmation(){
+  document.getElementById('surveyForm').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('confirmationScreen').classList.add('active');
+}
+
+/* ---------- Init ---------- */
+showSection(currentSection);
+</script>
+
+</body>
+</html>

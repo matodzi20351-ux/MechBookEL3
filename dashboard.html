@@ -6,6 +6,7 @@
 <title>MechBook EL – Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<a href="survey.html"><i class="fa-solid fa-clipboard-list"></i> Give Feedback</a>
 <style>
 :root{
   --primary:#2563EB;--accent:#0EA5E9;--secondary:#EFF6FF;
@@ -99,6 +100,14 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 .profile-row-label{color:var(--muted);font-weight:700;}
 .profile-row-val{font-weight:800;}
 
+/* DELETE ACCOUNT */
+.delete-account-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;margin-top:1.4rem;padding:.75rem 1rem;background:#FEF2F2;border:2px solid var(--danger);border-radius:10px;color:var(--danger);font-family:'Nunito';font-weight:800;font-size:.88rem;cursor:pointer;transition:.2s;}
+.delete-account-btn:hover{background:var(--danger);color:#fff;}
+.modal-select,.modal-input{width:100%;padding:.75rem 1rem;border:2px solid var(--border);border-radius:8px;font-family:'Nunito';font-size:.9rem;color:var(--text);outline:none;margin-bottom:1rem;background:#fff;}
+.modal-select:focus,.modal-input:focus{border-color:var(--danger);}
+.modal-label{display:block;font-size:.78rem;font-weight:800;color:var(--muted);margin-bottom:.35rem;}
+.delete-warning{background:rgba(220,38,38,.07);border:1px solid var(--danger);border-radius:8px;padding:.7rem .9rem;font-size:.8rem;color:var(--danger);font-weight:700;margin-bottom:1rem;line-height:1.4;}
+
 /* NOTIFICATIONS */
 .notif-list{display:flex;flex-direction:column;gap:.7rem;}
 .notif-item{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem;transition:.2s;}
@@ -172,7 +181,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 .tracker-line.done{background:var(--success);}
 
 /* TOAST */
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--text);color:#fff;padding:.9rem 1.4rem;border-radius:12px;font-size:.88rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:.4s cubic-bezier(.34,1.56,.64,1);}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;background:var(--text);color:#fff;padding:.9rem 1.4rem;border-radius:12px;font-size:.88rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:.4s cubic-bezier(.34,1.56,.64,1);}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.success{background:var(--success);}
 .toast.error{background:var(--danger);}
@@ -180,7 +189,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 /* MODALS */
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-bg.show{display:flex;}
-.modal{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:2rem;max-width:420px;width:100%;animation:fadeIn .3s ease both;}
+.modal{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:2rem;max-width:420px;width:100%;max-height:92vh;overflow-y:auto;animation:fadeIn .3s ease both;}
 .modal h3{font-family:'Bebas Neue';font-size:1.8rem;letter-spacing:2px;margin-bottom:.5rem;}
 .modal h3 span{color:var(--primary);}
 .modal p{color:var(--muted);font-size:.88rem;margin-bottom:1.2rem;line-height:1.5;}
@@ -191,6 +200,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 .btn-confirm{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;}
 .btn-cancel{background:var(--secondary);color:var(--muted);border:2px solid var(--border)!important;}
 .btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:disabled{opacity:.6;cursor:not-allowed;}
 
 /* OVERLAY / HAMBURGER */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none;}
@@ -211,8 +221,118 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   .hamburger{display:block!important;}
   .booking-card,.request-card{flex-wrap:wrap;}
 }
+/* ================================
+   AUTOMATIC SURVEY POPUP
+================================ */
+
+.survey-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(7px);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.survey-modal.show {
+    display: flex;
+    animation: surveyFadeIn .3s ease;
+}
+
+.survey-modal-content {
+    position: relative;
+
+    width: 95%;
+    max-width: 900px;
+    height: 90vh;
+
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+
+    box-shadow: 0 25px 70px rgba(0,0,0,.35);
+}
+
+.survey-modal-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.survey-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    z-index: 10;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+    color: #0F172A;
+
+    font-size: 20px;
+    cursor: pointer;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,.2);
+}
+
+.survey-close:hover {
+    background: #DC2626;
+    color: white;
+}
+
+@keyframes surveyFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .survey-modal {
+        padding: 8px;
+    }
+
+    .survey-modal-content {
+        width: 100%;
+        height: 96vh;
+        border-radius: 14px;
+    }
+}
 </style>
 </head>
+<!-- AUTOMATIC SURVEY POPUP -->
+<div class="survey-modal" id="surveyModal">
+    <div class="survey-modal-content">
+
+        <button class="survey-close" onclick="closeSurvey()" aria-label="Close survey">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <iframe
+            src="survey.html"
+            title="MechBook EL User Survey">
+        </iframe>
+
+    </div>
+</div>
 <body>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -413,18 +533,51 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   </div>
 </div>
 
+<!-- DELETE ACCOUNT MODAL -->
+<div class="modal-bg" id="deleteModal">
+  <div class="modal">
+    <h3>Delete <span style="color:var(--danger);">Account?</span></h3>
+    <div class="delete-warning"><i class="fa-solid fa-triangle-exclamation"></i> This is permanent. Your profile and booking history will be removed.</div>
+
+    <label class="modal-label" for="deleteReason">Why are you leaving? *</label>
+    <select class="modal-select" id="deleteReason" onchange="onDeleteReasonChange()">
+      <option value="">Select a reason…</option>
+      <option>I no longer need the service</option>
+      <option>I found a better alternative</option>
+      <option>Too difficult to use</option>
+      <option>Poor experience with a workshop / customer</option>
+      <option>Privacy concerns</option>
+      <option>I have a duplicate account</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <div id="deleteOtherWrap" style="display:none;">
+      <label class="modal-label" for="deleteOther">Please tell us more *</label>
+      <textarea class="modal-textarea" id="deleteOther" placeholder="Tell us what went wrong…"></textarea>
+    </div>
+
+    <label class="modal-label" for="deleteConfirmText">Type <b>DELETE</b> to confirm *</label>
+    <input class="modal-input" id="deleteConfirmText" type="text" placeholder="DELETE" autocomplete="off"/>
+
+    <div class="modal-btns">
+      <button class="btn-danger" id="deleteConfirmBtn" onclick="confirmDeleteAccount()"><i class="fa-solid fa-trash"></i> Delete My Account</button>
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ═══════════════════════════════════════════════════
-   MECHBOOK EL — DASHBOARD (fully API-driven)
-   All data lives in db.json via server.js.
-   Multiple users on multiple devices share live data.
-   Auto-refreshes every 30 seconds.
-═══════════════════════════════════════════════════ */
+
+   //MECHBOOK EL — DASHBOARD (fully API-driven)
+   //All data lives in db.json via server.js.
+   //Multiple users on multiple devices share live data.
+   //Auto-refreshes every 30 seconds.
+
 
 const API = 'https://mechbookel3-1.onrender.com/api';
 const TOKEN = localStorage.getItem('mb_token');
 
-/* redirect if not logged in */
+//redirect if not logged in 
 if (!TOKEN) window.location.href = 'index.html';
 
 const USER = {
@@ -440,7 +593,7 @@ const ROLE     = USER.role;
 const FNAME    = USER.fname || USER.fullname.split(' ')[0];
 const INITIALS = USER.fullname.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
 
-/* ── API helper ── */
+//API helper 
 async function api(path, opts={}) {
   const res  = await fetch(API + path, {
     ...opts,
@@ -741,6 +894,7 @@ function buildProfile() {
       <div class="profile-row"><span class="profile-row-label">Email</span><span class="profile-row-val">${esc(USER.email)}</span></div>
       <div class="profile-row"><span class="profile-row-label">Phone</span><span class="profile-row-val">${esc(USER.phone)}</span></div>
     </div>
+    <button class="delete-account-btn" onclick="openDeleteModal()"><i class="fa-solid fa-trash"></i> Delete Account</button>
   </div>`;
 }
 
@@ -755,6 +909,7 @@ function buildMecProfile() {
       <div class="profile-row"><span class="profile-row-label">Phone</span><span class="profile-row-val">${esc(USER.phone)}</span></div>
       <div class="profile-row"><span class="profile-row-label">Workshop</span><span class="profile-row-val">${esc(USER.wsname||'Not set')}</span></div>
     </div>
+    <button class="delete-account-btn" onclick="openDeleteModal()"><i class="fa-solid fa-trash"></i> Delete Account</button>
   </div>`;
 }
 
@@ -773,6 +928,47 @@ function buildBarChart(bookings) {
         <div class="bar-tooltip">${v}</div>
       </div>
     </div>`).join('');
+}
+
+/* ════════════════════════════════════
+   DELETE ACCOUNT
+════════════════════════════════════ */
+function openDeleteModal(){
+  document.getElementById('deleteReason').value = '';
+  document.getElementById('deleteOther').value = '';
+  document.getElementById('deleteConfirmText').value = '';
+  document.getElementById('deleteOtherWrap').style.display = 'none';
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function onDeleteReasonChange(){
+  const isOther = document.getElementById('deleteReason').value === 'Other';
+  document.getElementById('deleteOtherWrap').style.display = isOther ? 'block' : 'none';
+}
+
+async function confirmDeleteAccount(){
+  const reason  = document.getElementById('deleteReason').value;
+  const details = document.getElementById('deleteOther').value.trim();
+  const confirm = document.getElementById('deleteConfirmText').value.trim();
+
+  if (!reason)                          return showToast('Please tell us why you are leaving.', 'error');
+  if (reason === 'Other' && !details)   return showToast('Please describe your reason.', 'error');
+  if (confirm !== 'DELETE')             return showToast('Type DELETE to confirm.', 'error');
+
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+
+  try {
+    await api('/account', { method:'DELETE', body: JSON.stringify({ reason, details }) });
+    ['mb_token','mb_fname','mb_lname','mb_fullname','mb_role','mb_email','mb_phone','mb_wsname']
+      .forEach(k => localStorage.removeItem(k));
+    showToast('Account deleted. Goodbye!', 'success');
+    setTimeout(() => window.location.href = 'index.html', 1200);
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-trash"></i> Delete My Account';
+    showToast('Error: ' + e.message, 'error');
+  }
 }
 
 /* ════════════════════════════════════
@@ -807,6 +1003,34 @@ function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function doLogout(){
   ['mb_token','mb_fname','mb_lname','mb_fullname','mb_role','mb_email','mb_phone','mb_wsname'].forEach(k=>localStorage.removeItem(k));
   window.location.href='index.html';
+}
+
+// AUTOMATIC SURVEY AFTER 1 MINUTES
+
+const SURVEY_DELAY = 1 * 60 * 1000; 
+
+let surveyTimer = setTimeout(function () {
+    openSurvey();
+}, SURVEY_DELAY);
+
+
+function openSurvey() {
+    const modal = document.getElementById('surveyModal');
+
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+
+function closeSurvey() {
+    const modal = document.getElementById('surveyModal');
+
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 }
 </script>
 </body>

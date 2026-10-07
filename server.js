@@ -46,9 +46,9 @@ const otpStore = {};
 /* ─── middleware ─── */
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));   // serves all HTML/CSS/JS from same folder
+app.use(express.static(__dirname));   
 
-/* ─── db helpers ─── */
+//db helpers
 function readDB() {
   if (!fs.existsSync(DB))
     fs.writeFileSync(DB, JSON.stringify({ users:[], bookings:[], notifications:[] }, null, 2));
@@ -160,7 +160,7 @@ app.post('/api/verify-otp', (req, res) => {
   });
 });
 
-/* ─── auth middleware ─── */
+//auth middleware
 function auth(req, res, next) {
   const token = (req.headers.authorization || '').split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No token provided.' });
@@ -168,9 +168,8 @@ function auth(req, res, next) {
   catch { return res.status(401).json({ error: 'Invalid or expired token.' }); }
 }
 
-/* ══════════════════════════════════════
-   POST /api/register
-══════════════════════════════════════ */
+
+   //POST /api/register
 app.post('/api/register', async (req, res) => {
   const { fname, lname, email, phone, password, role, wsname } = req.body;
 
@@ -216,9 +215,8 @@ app.post('/api/register', async (req, res) => {
   return res.status(201).json({ message:'Account created successfully.', token, user:safe });
 });
 
-/* ══════════════════════════════════════
-   POST /api/login
-══════════════════════════════════════ */
+
+   //POST /api/login
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
   if (!email || !password)
@@ -243,9 +241,9 @@ app.post('/api/login', async (req, res) => {
   return res.status(200).json({ message:'Login successful.', token, user:safe });
 });
 
-/* ══════════════════════════════════════
-   GET /api/me
-══════════════════════════════════════ */
+
+   //GET /api/me
+
 app.get('/api/me', auth, (req, res) => {
   const db   = readDB();
   const user = db.users.find(u => u.id === req.user.id);
@@ -254,9 +252,9 @@ app.get('/api/me', auth, (req, res) => {
   return res.json({ user: safe });
 });
 
-/* ══════════════════════════════════════
-   POST /api/bookings   (car owner creates)
-══════════════════════════════════════ */
+
+   //POST /api/bookings   (car owner creates)
+
 app.post('/api/bookings', auth, (req, res) => {
   if (req.user.role !== 'owner')
     return res.status(403).json({ error:'Only car owners can create bookings.' });
@@ -346,9 +344,8 @@ app.get('/api/bookings/workshop', auth, (req, res) => {
   return res.json({ bookings: db.bookings.filter(b => b.wsKey === user.wskey) });
 });
 
-/* ══════════════════════════════════════
-   PATCH /api/bookings/:ref/status  (mechanic)
-══════════════════════════════════════ */
+
+  // PATCH /api/bookings/:ref/status  (mechanic)
 app.patch('/api/bookings/:ref/status', auth, (req, res) => {
   if (req.user.role !== 'mechanic')
     return res.status(403).json({ error:'Only workshop owners can update booking status.' });
