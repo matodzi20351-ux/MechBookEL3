@@ -7,6 +7,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="style.css"/>
+<style>
+/* FORGOT PASSWORD POPUP (home page) */
+.fp-overlay{position:fixed;inset:0;background:rgba(15,23,42,.75);backdrop-filter:blur(8px);z-index:100000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.fp-overlay.show{display:flex;}
+.fp-box{background:#fff;border-radius:20px;padding:2.2rem 2rem;max-width:400px;width:100%;text-align:center;border:2px solid #D1D5DB;box-shadow:0 20px 50px rgba(0,0,0,.2);font-family:'Nunito',sans-serif;color:#0F172A;}
+.fp-icon{font-size:3rem;margin-bottom:.6rem;color:#2563EB;}
+.fp-box h2{font-family:'Bebas Neue';font-size:2rem;letter-spacing:2px;color:#2563EB;margin-bottom:.4rem;}
+.fp-box p{color:#64748B;font-size:.88rem;line-height:1.6;margin-bottom:1.2rem;}
+.fp-label{display:block;text-align:left;font-size:.78rem;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.38rem;}
+.fp-input{width:100%;padding:.72rem .9rem;border:2px solid #D1D5DB;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.93rem;color:#0F172A;background:#fff;outline:none;transition:.2s;margin-bottom:.4rem;}
+.fp-input:focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.11);}
+.fp-input.err{border-color:#DC2626;}
+.fp-err{display:none;text-align:left;font-size:.75rem;font-weight:800;color:#DC2626;margin-bottom:.8rem;}
+.fp-err.show{display:block;}
+.fp-btn{display:block;width:100%;padding:.85rem;border:none;border-radius:12px;background:linear-gradient(135deg,#2563EB,#0EA5E9);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;margin-top:.8rem;transition:.25s;}
+.fp-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.25);}
+.fp-btn.ghost{background:transparent;border:2px solid #D1D5DB;color:#64748B;margin-top:.6rem;}
+.fp-btn.ghost:hover{box-shadow:none;border-color:#2563EB;color:#2563EB;}
+</style>
 </head>
 <body>
 
@@ -384,10 +403,77 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════
+     FORGOT PASSWORD POPUP
+     ════════════════════════════════ -->
+<div class="fp-overlay" id="forgotOverlay" onclick="closeForgot()">
+  <div class="fp-box" onclick="event.stopPropagation()">
+
+    <!-- Step 1: enter email -->
+    <div id="forgot-form">
+      <div class="fp-icon"><i class="fa-solid fa-key"></i></div>
+      <h2>Reset Password</h2>
+      <p>Enter your email and we'll send you a reset link.</p>
+      <label class="fp-label" for="forgot-email">Email Address</label>
+      <input class="fp-input" type="email" id="forgot-email" placeholder="you@email.com"
+             onkeydown="if(event.key==='Enter')sendReset()"/>
+      <div class="fp-err" id="forgot-err">Please enter a valid email address.</div>
+      <button class="fp-btn" onclick="sendReset()">Send Reset Link</button>
+      <button class="fp-btn ghost" onclick="closeForgot()">Cancel</button>
+    </div>
+
+    <!-- Step 2: confirmation -->
+    <div id="forgot-done" style="display:none;">
+      <div class="fp-icon">📧</div>
+      <h2>Email Sent!</h2>
+      <p id="forgot-done-msg">A reset link has been sent. Check your inbox.</p>
+      <button class="fp-btn" onclick="closeForgot()">Back to Login</button>
+    </div>
+
+  </div>
+</div>
+
 <div class="page-footer">
   © 2026 <span>MechBook EL</span> · East London, Eastern Cape · HCI26W0 Project
 </div>
 
 <script src="home.js"></script>
+<script>
+/* ── FORGOT PASSWORD (school demo – no email is actually sent) ── */
+function showForgot() {
+  const form = document.getElementById('forgot-form');
+  const done = document.getElementById('forgot-done');
+  form.style.display = 'block';
+  done.style.display = 'none';
+  document.getElementById('forgot-email').value = '';
+  document.getElementById('forgot-email').classList.remove('err');
+  document.getElementById('forgot-err').classList.remove('show');
+  document.getElementById('forgotOverlay').classList.add('show');
+  setTimeout(function () { document.getElementById('forgot-email').focus(); }, 50);
+}
+
+function closeForgot() {
+  document.getElementById('forgotOverlay').classList.remove('show');
+}
+
+function sendReset() {
+  const input = document.getElementById('forgot-email');
+  const err   = document.getElementById('forgot-err');
+  const email = input.value.trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.classList.add('err');
+    err.classList.add('show');
+    return;
+  }
+  input.classList.remove('err');
+  err.classList.remove('show');
+
+  document.getElementById('forgot-done-msg').textContent =
+    'A reset link has been sent to ' + email + '. Check your inbox.';
+  document.getElementById('forgot-form').style.display = 'none';
+  document.getElementById('forgot-done').style.display = 'block';
+}
+</script>
 </body>
 </html>
