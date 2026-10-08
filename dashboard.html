@@ -659,6 +659,7 @@ async function loadOwnerBookings() {
     document.getElementById('stat-done').textContent      = bookings.filter(b=>b.status==='Completed').length;
     renderOwnerBookings(bookings);
     renderTracker(bookings);
+    maybeShowSurvey(bookings.length);
   } catch(e) {
     apiError('bookings-list', e.message);
     apiError('overview-bookings-list', e.message);
@@ -731,6 +732,7 @@ async function loadWorkshopBookings() {
     renderMecActive(bookings);
     renderMecOverview(bookings);
     buildBarChart(bookings);
+    maybeShowSurvey(bookings.length);
   } catch(e) {
     apiError('mec-requests-list', e.message);
   }
@@ -1005,13 +1007,25 @@ function doLogout(){
   window.location.href='index.html';
 }
 
-// AUTOMATIC SURVEY AFTER 1 MINUTES
+// AUTOMATIC SURVEY
+// Car owner  → appears once, after they have made a booking
+// Mechanic   → appears once, after their first customer booking arrives
+// (each user only sees it one time, remembered in this browser)
 
-const SURVEY_DELAY = 1 * 60 * 1000; 
+const SURVEY_DELAY = 1500; // small pause so the dashboard loads first
 
-let surveyTimer = setTimeout(function () {
-    openSurvey();
-}, SURVEY_DELAY);
+function surveyKey() {
+    return 'mb_survey_shown_' + USER.email;
+}
+
+function maybeShowSurvey(bookingCount) {
+    if (bookingCount < 1) return;
+    try {
+        if (localStorage.getItem(surveyKey())) return; // already shown before
+        localStorage.setItem(surveyKey(), '1');
+    } catch (e) {}
+    setTimeout(openSurvey, SURVEY_DELAY);
+}
 
 
 function openSurvey() {
